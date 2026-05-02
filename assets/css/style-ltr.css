@@ -1,0 +1,106 @@
+/* تحسين الخطوط في النسخة الإنجليزية */
+body.lang-en .hero-content h1 {
+    letter-spacing: 0.5px;
+}
+
+body.lang-en .hero-content p {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.5;
+}
+
+body.lang-en .hero-btn {
+    text-transform: capitalize; /* لجعل أول حرف من الكلمات كبيراً */
+}
+
+/* ضبط قسم الخدمات للغة الإنجليزية */
+body.lang-en .services {
+    direction: ltr;
+    text-align: left;
+}
+
+body.lang-en .sec-title {
+    text-align: left; /* محاذاة عنوان القسم لليسار */
+}
+
+body.lang-en .card-info {
+    flex-direction: row; /* التأكد من ترتيب النص والسهم من اليسار لليمين */
+    justify-content: space-between;
+}
+
+/* قلب أيقونة السهم لتعطي انطباع الاتجاه لليمين */
+body.lang-en .card-info img {
+    transform: scaleX(-1); /* قلب الصورة أفقياً */
+    margin-left: 10px;
+    margin-right: 0;
+}
+
+body.lang-en .card-info h3 {
+    margin-right: auto;
+    margin-left: 0;
+}
+
+/* ضبط بطاقات المميزات للغة الإنجليزية */
+body.lang-en section.choose .choose-card {
+    text-align: left; /* قلب محاذاة النص لليسار */
+}
+
+/* ضبط المسافات للأيقونة في الإنجليزية */
+body.lang-en section.choose .choose-card img {
+    margin-right: auto; /* دفع الأيقونة لليسار */
+    margin-left: 0;
+}
+
+/* ضبط اتجاه النقاط في الإنجليزية */
+body.lang-en .dots {
+    direction: ltr;
+}
+
+/* إذا كنتِ تستخدمين أنميشن للـ active dot، تأكدي أنه يبدأ من اليسار */
+body.lang-en .dot.active {
+    transition: width 0.3s ease;
+}
+
+/* ضبط مكان السهم في النسخة الإنجليزية */
+body.lang-en .accordion-button::after {
+    margin-right: 0;
+    margin-left: auto;
+}
+
+body.lang-en .accordion-button {
+    text-align: left;
+}
+
+/* إعدادات الروابط السريعة للنسخة الإنجليزية */
+body.lang-en .quick-link a {
+    padding-right: 0 !important;
+    padding-left: 24px !important;
+    text-align: left !important;
+    font-size: 14px;
+}
+
+body.lang-en .quick-link a::before {
+    right: auto !important;
+    left: 0 !important;
+}
+
+body.lang-en .consult-banner-inner {
+    flex-direction: row; /* التأكد من بقاء العناصر بجانب بعضها */
+    text-align: left;
+}
+
+body.lang-en .consult-banner-text {
+    max-width: 52%;
+}
+
+/* تعديل اتجاه المدخلات في الفورم */
+body.lang-en .consult-banner-form {
+    flex-direction: row;
+}
+
+body.lang-en .consult-banner-form input {
+    text-align: left;
+}
+
+body.lang-en .consult-banner-form button img {
+    transform: scaleX(-1); 
+}
