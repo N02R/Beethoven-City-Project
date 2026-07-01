@@ -1,66 +1,72 @@
 <?php
+
+// تحديد ترميز الصفحة (حل مشكلة العربية)
+header('Content-Type: text/html; charset=utf-8');
+
 /**
  * المحرك الرئيسي للموقع - index.php
  * نظام التوجيه الذكي وفحص المسارات - Beethoven City Website
  */
 
-header('Content-Type: text/html; charset=utf-8');
 // 1. تضمين ملف الإعدادات والدوال الأساسية
-require_once "includes/bootstrap.php";
+require_once __DIR__ . "/includes/bootstrap.php";
 
-// 2. تحديد الصفحة المطلوبة وتنظيف الرابط من أي إضافات ضارة
+// 2. تحديد الصفحة المطلوبة وتنظيف الرابط
 $page = $_GET['page'] ?? 'home';
-$page = basename($page); // حماية ضد محاولات الوصول للمجلدات العليا (Path Traversal)
+$page = basename($page); // حماية ضد Path Traversal
 
-// 3. جلب نصوص اللغة المشتركة (Navbar & Footer)
-// يتم استدعاؤها مرة واحدة هنا لتكون متاحة في الـ Layout لاحقاً
-$nav = content('navbar'); 
-$footer_data = content('footer'); 
+// 3. جلب البيانات المشتركة (Navbar & Footer)
+$nav = content('navbar');
+$footer_data = content('footer');
 
-// 4. نظام التوجيه الذكي (Routing) - فحص وجود الملف في المجلدات المسموحة
-// قمنا بترتيب المجلدات لتبدأ بالأكثر استخداماً لتسريع الأداء
+// 4. المجلدات المسموح بها للصفحات
 $allowed_folders = [
-    "pages",          // الصفحات التعريفية (home, about, 404)
-    "edu-services",   // الخدمات التعليمية
-    "job-services",   // الخدمات المهنية
-    "guides"          // الأدلة الإرشادية
+    "pages",
+    "edu-services",
+    "job-services",
+    "guides"
 ];
 
 $filePath = null;
 
-// فحص أمني إضافي: منع طلب ملفات النظام الحساسة عبر الرابط
-$forbidden_names = ['config', 'bootstrap', 'layout', 'db_connect', 'header', 'footer'];
+// 5. منع أسماء حساسة
+$forbidden_names = [
+    'config',
+    'bootstrap',
+    'layout',
+    'db_connect',
+    'header',
+    'footer'
+];
 
+// البحث عن الصفحة داخل المجلدات
 if (!in_array($page, $forbidden_names)) {
     foreach ($allowed_folders as $folder) {
-        $tempPath = "$folder/$page.php";
+        $tempPath = $folder . "/" . $page . ".php";
+
         if (file_exists($tempPath)) {
             $filePath = $tempPath;
-            break; // توقف فور إيجاد الملف
+            break;
         }
     }
 }
 
-// 5. في حال لم يتم العثور على الصفحة (معالجة الخطأ 404)
+// 6. صفحة 404 إذا لم يتم العثور على الصفحة
 if (!$filePath) {
     $page = '404';
     $filePath = "pages/404.php";
-    http_response_code(404); // إرسال حالة HTTP 404 للمتصفح ومحركات البحث
+    http_response_code(404);
 }
 
-// 6. جلب إعدادات الصفحة ونصوصها المترجمة
-// الآن نحن متأكدون أن $page إما صفحة موجودة أو أصبحت 404
-$config = require "config.php";
+// 7. تحميل إعدادات الصفحة
+$config = require __DIR__ . "/config.php";
 $page_config = $config['pages'][$page] ?? $config['pages']['404'];
-$page_content = content($page); 
+$page_content = content($page);
 
-// 7. تشغيل محرك معالجة المحتوى (Output Buffering)
+// 8. تشغيل Output Buffering
 ob_start();
-// استدعاء الملف الذي تم إيجاده ليتم حقنه داخل متغير $content
-include $filePath; 
+include $filePath;
 $content = ob_get_clean();
 
-// 8. دمج كل المكونات داخل القالب العام (Layout)
-// الـ Layout هو الذي يحتوي على <html> و <head> ويقوم بطباعة $content
-include "includes/layout.php";
-
+// 9. عرض القالب النهائي (Layout)
+include __DIR__ . "/includes/layout.php";
