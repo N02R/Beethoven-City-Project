@@ -4,6 +4,7 @@
  * نظام التوجيه الذكي وفحص المسارات - Beethoven City Website
  */
 
+header('Content-Type: text/html; charset=utf-8');
 // 1. تضمين ملف الإعدادات والدوال الأساسية
 require_once "includes/bootstrap.php";
 
