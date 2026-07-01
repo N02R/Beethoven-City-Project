@@ -1,5 +1,5 @@
 <?php
-
+var_dump($_GET); exit;
 // تحديد ترميز الصفحة (حل مشكلة العربية)
 header('Content-Type: text/html; charset=utf-8');
 
