@@ -1,25 +1,25 @@
 <?php
 
-// تحديد ترميز الصفحة (حل مشكلة العربية)
 header('Content-Type: text/html; charset=utf-8');
 
-/**
- * المحرك الرئيسي للموقع - index.php
- * نظام التوجيه الذكي وفحص المسارات - Beethoven City Website
- */
-
-// 1. تضمين ملف الإعدادات والدوال الأساسية
 require_once __DIR__ . "/includes/bootstrap.php";
 
-// 2. تحديد الصفحة المطلوبة وتنظيف الرابط
+/**
+ * 1. تحديد الصفحة من الرابط
+ */
 $page = $_GET['page'] ?? 'home';
-$page = basename($page); // حماية ضد Path Traversal
+$page = trim($page);
+$page = basename($page);
 
-// 3. جلب البيانات المشتركة (Navbar & Footer)
+/**
+ * 2. البيانات المشتركة
+ */
 $nav = content('navbar');
 $footer_data = content('footer');
 
-// 4. المجلدات المسموح بها للصفحات
+/**
+ * 3. المجلدات المسموحة
+ */
 $allowed_folders = [
     "pages",
     "edu-services",
@@ -29,7 +29,9 @@ $allowed_folders = [
 
 $filePath = null;
 
-// 5. منع أسماء حساسة
+/**
+ * 4. أسماء محظورة
+ */
 $forbidden_names = [
     'config',
     'bootstrap',
@@ -39,34 +41,53 @@ $forbidden_names = [
     'footer'
 ];
 
-// البحث عن الصفحة داخل المجلدات
+/**
+ * 5. البحث عن الصفحة داخل المشروع
+ */
 if (!in_array($page, $forbidden_names)) {
-    foreach ($allowed_folders as $folder) {
-        $tempPath = $folder . "/" . $page . ".php";
 
-        if (file_exists($tempPath)) {
-            $filePath = $tempPath;
+    foreach ($allowed_folders as $folder) {
+
+        // المسار الصحيح المطلق
+        $path1 = __DIR__ . "/$folder/$page.php";
+        $path2 = __DIR__ . "/$folder/$page/index.php";
+
+        if (is_file($path1)) {
+            $filePath = $path1;
+            break;
+        }
+
+        if (is_file($path2)) {
+            $filePath = $path2;
             break;
         }
     }
 }
 
-// 6. صفحة 404 إذا لم يتم العثور على الصفحة
+/**
+ * 6. صفحة 404
+ */
 if (!$filePath) {
     $page = '404';
-    $filePath = "pages/404.php";
+    $filePath = __DIR__ . "/pages/404.php";
     http_response_code(404);
 }
 
-// 7. تحميل إعدادات الصفحة
+/**
+ * 7. إعدادات الصفحة
+ */
 $config = require __DIR__ . "/config.php";
 $page_config = $config['pages'][$page] ?? $config['pages']['404'];
 $page_content = content($page);
 
-// 8. تشغيل Output Buffering
+/**
+ * 8. Render المحتوى
+ */
 ob_start();
 include $filePath;
 $content = ob_get_clean();
 
-// 9. عرض القالب النهائي (Layout)
+/**
+ * 9. layout
+ */
 include __DIR__ . "/includes/layout.php";
