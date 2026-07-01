@@ -10,7 +10,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // 2. تعريف الثوابت الأساسية (تعديل المسار حسب بيئتك)
-define('BASE_URL', 'http://localhost:8080/');
+define('BASE_URL', '/');
 define('CONTENT_PATH', realpath(__DIR__ . '/../content')); 
 
 // 3. دالة الأمان العالمية (XSS Protection)
