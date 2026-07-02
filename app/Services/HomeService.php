@@ -3,7 +3,9 @@
 class HomeService
 {
     /**
+     * ============================
      * HERO
+     * ============================
      */
     public static function getHero($conn, $lang)
     {
@@ -20,7 +22,9 @@ class HomeService
     }
 
     /**
+     * ============================
      * SERVICES
+     * ============================
      */
     public static function getServices($conn, $lang)
     {
@@ -46,7 +50,9 @@ class HomeService
     }
 
     /**
+     * ============================
      * CHOOSE
+     * ============================
      */
     public static function getChoose($conn, $lang)
     {
@@ -72,7 +78,9 @@ class HomeService
     }
 
     /**
-     * REVIEWS
+     * ============================
+     * REVIEWS (FIXED ORDER)
+     * ============================
      */
     public static function getReviews($conn, $lang)
     {
@@ -83,8 +91,9 @@ class HomeService
             ORDER BY id ASC
         ");
 
-        $stmt->execute();
+        // ✔ الصحيح: bind_param قبل execute
         $stmt->bind_param("s", $lang);
+        $stmt->execute();
 
         $result = $stmt->get_result();
 
@@ -101,7 +110,9 @@ class HomeService
     }
 
     /**
+     * ============================
      * GUIDE
+     * ============================
      */
     public static function getGuide($conn, $lang)
     {
