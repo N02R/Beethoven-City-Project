@@ -5,6 +5,18 @@ header('Content-Type: text/html; charset=utf-8');
 require_once __DIR__ . "/includes/bootstrap.php";
 
 /**
+ * ============================
+ * 0. اتصال قاعدة البيانات (مرة واحدة فقط)
+ * ============================
+ */
+$conn = new mysqli("127.0.0.1", "root", "", "cms_dev");
+$conn->set_charset("utf8mb4");
+
+if ($conn->connect_error) {
+    die("DB Connection Failed: " . $conn->connect_error);
+}
+
+/**
  * 1. تحديد الصفحة من الرابط
  */
 $page = $_GET['page'] ?? 'home';
@@ -12,13 +24,13 @@ $page = trim($page);
 $page = basename($page);
 
 /**
- * 2. البيانات المشتركة
+ * 2. البيانات المشتركة (Navbar / Footer من content system)
  */
 $nav = content('navbar');
 $footer_data = content('footer');
 
 /**
- * 3. المجلدات المسموحة
+ * 3. المجلدات المسموحة (File-based fallback)
  */
 $allowed_folders = [
     "pages",
@@ -73,20 +85,31 @@ if (!$filePath) {
 }
 
 /**
+ * ============================
  * 7. إعدادات الصفحة
+ * ============================
  */
 $config = require __DIR__ . "/config.php";
 $page_config = $config['pages'][$page] ?? $config['pages']['404'];
 $page_content = content($page);
 
-// 🔥 جلب Hero من قاعدة البيانات
+/**
+ * ============================
+ * 8. جلب Hero من قاعدة البيانات (Home فقط)
+ * ============================
+ */
 $hero = null;
 
 if ($page === 'home') {
 
-    $stmt = $conn->prepare("SELECT * FROM pages WHERE slug = ? AND lang = ?");
     $slug = 'home_hero';
     $lang = $_SESSION['lang'] ?? 'ar';
+
+    $stmt = $conn->prepare("
+        SELECT * 
+        FROM pages 
+        WHERE slug = ? AND lang = ?
+    ");
 
     $stmt->bind_param("ss", $slug, $lang);
     $stmt->execute();
@@ -97,18 +120,19 @@ if ($page === 'home') {
 
 /**
  * ============================
- * 🔥 8. DATABASE LAYER (HOME فقط)
+ * 9. جلب محتوى الصفحة من DB (Home فقط)
  * ============================
  */
-
 $dbPage = null;
 
 if ($page === 'home') {
 
-    $conn = new mysqli("127.0.0.1", "root", "", "cms_dev");
-    $conn->set_charset("utf8mb4");
+    $stmt = $conn->prepare("
+        SELECT title, content 
+        FROM pages 
+        WHERE slug = ? AND lang = ?
+    ");
 
-    $stmt = $conn->prepare("SELECT title, content FROM pages WHERE slug = ? AND lang = ?");
     $lang = $_SESSION['lang'] ?? 'ar';
 
     $stmt->bind_param("ss", $page, $lang);
@@ -119,7 +143,9 @@ if ($page === 'home') {
 }
 
 /**
- * 9. Render المحتوى
+ * ============================
+ * 10. Render File-based content
+ * ============================
  */
 ob_start();
 include $filePath;
@@ -127,19 +153,19 @@ $content = ob_get_clean();
 
 /**
  * ============================
- * 🔥 10. دمج DB مع النظام
+ * 11. Override بمحتوى DB (إن وجد)
  * ============================
  */
-
 if ($dbPage) {
-    // إذا الصفحة موجودة في قاعدة البيانات
     $content = $dbPage['content'];
 
-    // تحديث العنوان (اختياري)
+    // تحديث العنوان
     $page_config['title'][$_SESSION['lang'] ?? 'ar'] = $dbPage['title'];
 }
 
 /**
- * 11. layout
+ * ============================
+ * 12. عرض layout النهائي
+ * ============================
  */
 include __DIR__ . "/includes/layout.php";
