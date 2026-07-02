@@ -42,13 +42,12 @@ $forbidden_names = [
 ];
 
 /**
- * 5. البحث عن الصفحة داخل المشروع
+ * 5. البحث عن الصفحة داخل الملفات
  */
 if (!in_array($page, $forbidden_names)) {
 
     foreach ($allowed_folders as $folder) {
 
-        // المسار الصحيح المطلق
         $path1 = __DIR__ . "/$folder/$page.php";
         $path2 = __DIR__ . "/$folder/$page/index.php";
 
@@ -81,13 +80,50 @@ $page_config = $config['pages'][$page] ?? $config['pages']['404'];
 $page_content = content($page);
 
 /**
- * 8. Render المحتوى
+ * ============================
+ * 🔥 8. DATABASE LAYER (HOME فقط)
+ * ============================
+ */
+
+$dbPage = null;
+
+if ($page === 'home') {
+
+    $conn = new mysqli("localhost", "root", "", "cms_dev");
+    $conn->set_charset("utf8mb4");
+
+    $stmt = $conn->prepare("SELECT title, content FROM pages WHERE slug = ? AND lang = ?");
+    $lang = $_SESSION['lang'] ?? 'ar';
+
+    $stmt->bind_param("ss", $page, $lang);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+    $dbPage = $result->fetch_assoc();
+}
+
+/**
+ * 9. Render المحتوى
  */
 ob_start();
 include $filePath;
 $content = ob_get_clean();
 
 /**
- * 9. layout
+ * ============================
+ * 🔥 10. دمج DB مع النظام
+ * ============================
+ */
+
+if ($dbPage) {
+    // إذا الصفحة موجودة في قاعدة البيانات
+    $content = $dbPage['content'];
+
+    // تحديث العنوان (اختياري)
+    $page_config['title'][$_SESSION['lang'] ?? 'ar'] = $dbPage['title'];
+}
+
+/**
+ * 11. layout
  */
 include __DIR__ . "/includes/layout.php";
