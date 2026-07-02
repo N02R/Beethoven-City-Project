@@ -6,9 +6,9 @@ require_once __DIR__ . "/includes/bootstrap.php";
 require_once __DIR__ . "/app/Services/HomeService.php";
 
 /**
- * ============================
- * 0. اتصال قاعدة البيانات
- * ============================
+ * =========================
+ * DB CONNECTION
+ * =========================
  */
 $conn = new mysqli("127.0.0.1", "root", "", "cms_dev");
 $conn->set_charset("utf8mb4");
@@ -18,53 +18,44 @@ if ($conn->connect_error) {
 }
 
 /**
- * ============================
- * 1. تحديد الصفحة
- * ============================
+ * =========================
+ * PAGE
+ * =========================
  */
 $page = $_GET['page'] ?? 'home';
-$page = trim($page);
-$page = basename($page);
+$page = basename(trim($page));
 
 /**
- * ============================
- * 2. بيانات مشتركة
- * ============================
+ * =========================
+ * COMMON DATA
+ * =========================
  */
 $nav = content('navbar');
 $footer_data = content('footer');
 
-/**
- * ============================
- * 3. إعداد config
- * ============================
- */
 $config = require __DIR__ . "/config.php";
 $page_config = $config['pages'][$page] ?? $config['pages']['404'];
 
 /**
- * ============================
- * 4. بيانات الصفحة من DB (Home فقط)
- * ============================
+ * =========================
+ * HOME DATA FROM DB
+ * =========================
  */
-$hero = null;
+$hero = [];
 $services = [];
 
 if ($page === 'home') {
 
     $lang = $_SESSION['lang'] ?? 'ar';
 
-    // Hero
     $hero = HomeService::getHero($conn, $lang);
-
-    // Services
     $services = HomeService::getServices($conn, $lang);
 }
 
 /**
- * ============================
- * 5. تحديد ملف العرض
- * ============================
+ * =========================
+ * LOAD PAGE FILE
+ * =========================
  */
 $filePath = __DIR__ . "/pages/{$page}.php";
 
@@ -75,17 +66,12 @@ if (!file_exists($filePath)) {
 }
 
 /**
- * ============================
- * 6. Render page
- * ============================
+ * =========================
+ * RENDER
+ * =========================
  */
 ob_start();
 include $filePath;
 $content = ob_get_clean();
 
-/**
- * ============================
- * 7. Layout
- * ============================
- */
 include __DIR__ . "/includes/layout.php";

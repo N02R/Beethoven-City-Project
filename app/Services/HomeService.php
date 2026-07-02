@@ -2,25 +2,33 @@
 
 class HomeService
 {
+    // =========================
+    // HERO
+    // =========================
     public static function getHero($conn, $lang)
     {
-        $slug = 'home_hero';
-
         $stmt = $conn->prepare("
-            SELECT * FROM pages 
-            WHERE slug = ? AND lang = ?
+            SELECT title_text, description, button_text, button_link, image, alt_text
+            FROM pages
+            WHERE slug = 'home_hero' AND lang = ?
         ");
 
-        $stmt->bind_param("ss", $slug, $lang);
+        $stmt->bind_param("s", $lang);
         $stmt->execute();
 
-        return $stmt->get_result()->fetch_assoc();
+        $result = $stmt->get_result();
+
+        return $result->fetch_assoc() ?? [];
     }
 
+    // =========================
+    // SERVICES
+    // =========================
     public static function getServices($conn, $lang)
     {
         $stmt = $conn->prepare("
-            SELECT * FROM service_items 
+            SELECT title, image, link, alt
+            FROM service_items
             WHERE lang = ?
         ");
 
@@ -29,12 +37,12 @@ class HomeService
 
         $result = $stmt->get_result();
 
-        $data = [];
+        $items = [];
 
         while ($row = $result->fetch_assoc()) {
-            $data[] = $row;
+            $items[] = $row;
         }
 
-        return $data;
+        return $items;
     }
 }
