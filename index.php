@@ -79,6 +79,22 @@ $config = require __DIR__ . "/config.php";
 $page_config = $config['pages'][$page] ?? $config['pages']['404'];
 $page_content = content($page);
 
+// 🔥 جلب Hero من قاعدة البيانات
+$hero = null;
+
+if ($page === 'home') {
+
+    $stmt = $conn->prepare("SELECT * FROM pages WHERE slug = ? AND lang = ?");
+    $slug = 'home_hero';
+    $lang = $_SESSION['lang'] ?? 'ar';
+
+    $stmt->bind_param("ss", $slug, $lang);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+    $hero = $result->fetch_assoc();
+}
+
 /**
  * ============================
  * 🔥 8. DATABASE LAYER (HOME فقط)
