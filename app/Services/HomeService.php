@@ -79,7 +79,7 @@ class HomeService
 
     /**
      * ============================
-     * REVIEWS (FIXED ORDER)
+     * REVIEWS
      * ============================
      */
     public static function getReviews($conn, $lang)
@@ -91,7 +91,6 @@ class HomeService
             ORDER BY id ASC
         ");
 
-        // ✔ الصحيح: bind_param قبل execute
         $stmt->bind_param("s", $lang);
         $stmt->execute();
 
