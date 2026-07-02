@@ -12,3 +12,5 @@ $sectionsPath = "pages/includes/sections-home/";
 <?php include $sectionsPath . "services.php"; ?>
 
 <?php include $sectionsPath . "choose.php"; ?>
+
+<?php include $sectionsPath . "reviews.php"; ?>
