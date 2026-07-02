@@ -1,14 +1,25 @@
 <?php
+
 /**
  * الصفحة الرئيسية - home.php
- * تقوم بجلب البيانات وتوزيعها على السكاشن المختلفة
+ * تعمل كـ orchestrator للـ sections فقط
  */
 
-// 1. جلب بيانات الصفحة بناءً على اللغة المفعلة
+/**
+ * 1. جلب بيانات النظام القديم
+ */
 $data = content('home');
 
-// 2. توزيع البيانات على متغيرات (مع التأكد من أنها مصفوفات)
-$hero     = $data['hero'] ?? [];
+/**
+ * 2. دمج بيانات DB (Hero فقط)
+ * - إذا موجود من DB نستخدمه
+ * - غير ذلك نستخدم القديم
+ */
+$hero = $GLOBALS['hero_db'] ?? ($data['hero'] ?? []);
+
+/**
+ * 3. باقي الأقسام (كما هي)
+ */
 $services = $data['services'] ?? [];
 $choose   = $data['choose'] ?? [];
 $reviews  = $data['reviews'] ?? [];
@@ -16,17 +27,16 @@ $guide    = $data['guide'] ?? [];
 $faq      = $data['faq'] ?? [];
 
 /**
- * 3. استدعاء السكاشن بالترتيب
- * ملاحظة أمنية: نستخدم include لضمان استمرار عمل الصفحة حتى لو فُقد سكشن معين
+ * 4. مسار السكاشن
  */
-
-// مسار المجلد الذي يحتوي على السكاشن (لتسهيل الكتابة)
 $sectionsPath = "pages/includes/sections-home/";
 
-include $sectionsPath . "hero.php"; 
-include $sectionsPath . "services.php"; 
-include $sectionsPath . "choose.php"; 
-include $sectionsPath . "reviews.php"; 
-include $sectionsPath . "guide-preview.php"; 
-include $sectionsPath . "faq.php"; 
-?>
+/**
+ * 5. ترتيب العرض
+ */
+include $sectionsPath . "hero.php";
+include $sectionsPath . "services.php";
+include $sectionsPath . "choose.php";
+include $sectionsPath . "reviews.php";
+include $sectionsPath . "guide-preview.php";
+include $sectionsPath . "faq.php";
