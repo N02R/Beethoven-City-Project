@@ -24,9 +24,9 @@
 
               <div class="card">
 
-                <img src="<?= BASE_URL . $item['image'] ?>"
-                     alt="<?= $item['alt'] ?>"
-                     class="card-img">
+<img src="<?= BASE_URL . $item['image'] ?>"
+     alt="<?= $item['alt'] ?>"
+     loading="lazy">
 
                 <h3><?= $item['title'] ?></h3>
 
