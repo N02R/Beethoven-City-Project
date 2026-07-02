@@ -3,10 +3,11 @@
 header('Content-Type: text/html; charset=utf-8');
 
 require_once __DIR__ . "/includes/bootstrap.php";
+require_once __DIR__ . "/app/Services/HomeService.php";
 
 /**
  * ============================
- * 0. DB Connection
+ * 0. اتصال قاعدة البيانات
  * ============================
  */
 $conn = new mysqli("127.0.0.1", "root", "", "cms_dev");
@@ -17,90 +18,66 @@ if ($conn->connect_error) {
 }
 
 /**
+ * ============================
  * 1. تحديد الصفحة
+ * ============================
  */
 $page = $_GET['page'] ?? 'home';
 $page = trim($page);
 $page = basename($page);
 
 /**
- * 2. بيانات مشتركة (File system)
+ * ============================
+ * 2. بيانات مشتركة
+ * ============================
  */
 $nav = content('navbar');
 $footer_data = content('footer');
 
 /**
- * 3. البحث عن ملفات الصفحة
- */
-$allowed_folders = ["pages", "edu-services", "job-services", "guides"];
-
-$filePath = null;
-
-$forbidden_names = [
-    'config','bootstrap','layout','db_connect','header','footer'
-];
-
-if (!in_array($page, $forbidden_names)) {
-
-    foreach ($allowed_folders as $folder) {
-
-        $path1 = __DIR__ . "/$folder/$page.php";
-        $path2 = __DIR__ . "/$folder/$page/index.php";
-
-        if (is_file($path1)) {
-            $filePath = $path1;
-            break;
-        }
-
-        if (is_file($path2)) {
-            $filePath = $path2;
-            break;
-        }
-    }
-}
-
-/**
- * 4. 404
- */
-if (!$filePath) {
-    $page = '404';
-    $filePath = __DIR__ . "/pages/404.php";
-    http_response_code(404);
-}
-
-/**
- * 5. Config
+ * ============================
+ * 3. إعداد config
+ * ============================
  */
 $config = require __DIR__ . "/config.php";
 $page_config = $config['pages'][$page] ?? $config['pages']['404'];
-$page_content = content($page);
 
 /**
  * ============================
- * 6. HERO (DB فقط للـ home)
+ * 4. بيانات الصفحة من DB (Home فقط)
  * ============================
  */
-$hero_db = null;
+$hero = null;
+$services = [];
 
 if ($page === 'home') {
 
-    $slug = 'home_hero';
     $lang = $_SESSION['lang'] ?? 'ar';
 
-    $stmt = $conn->prepare("
-        SELECT * FROM pages 
-        WHERE slug = ? AND lang = ?
-    ");
+    // Hero
+    $hero = HomeService::getHero($conn, $lang);
 
-    $stmt->bind_param("ss", $slug, $lang);
-    $stmt->execute();
-
-    $result = $stmt->get_result();
-    $hero_db = $result->fetch_assoc();
+    // Services
+    $services = HomeService::getServices($conn, $lang);
 }
 
 /**
- * 7. Render file-based page
+ * ============================
+ * 5. تحديد ملف العرض
+ * ============================
+ */
+$filePath = __DIR__ . "/pages/{$page}.php";
+
+if (!file_exists($filePath)) {
+    $filePath = __DIR__ . "/pages/404.php";
+    http_response_code(404);
+    $page = '404';
+}
+
+/**
+ * ============================
+ * 6. Render page
+ * ============================
  */
 ob_start();
 include $filePath;
@@ -108,7 +85,7 @@ $content = ob_get_clean();
 
 /**
  * ============================
- * 8. Layout
+ * 7. Layout
  * ============================
  */
 include __DIR__ . "/includes/layout.php";
