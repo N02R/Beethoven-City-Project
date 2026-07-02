@@ -3,18 +3,26 @@
 $sectionsPath = "pages/includes/sections-home/";
 
 /**
- * تمرير البيانات من HomeService
- * (يجب أن تكون جاهزة من index.php)
+ * ضمان عدم كسر الـ views
  */
 
-if (!isset($hero)) $hero = [];
-if (!isset($services)) $services = [];
-if (!isset($choose)) $choose = [];
-if (!isset($reviews)) $reviews = [];
-if (!isset($guide)) $guide = [];
+$hero = $hero ?? [];
+
+$services = [
+    'title' => 'خدماتنا',
+    'items' => $services ?? []
+];
+
+$choose = [
+    'title' => 'ما الذي يميز بيتهوفن سيتي',
+    'items' => $choose ?? []
+];
+
+$reviews = $reviews ?? [];
+$guide   = $guide ?? [];
 
 /**
- * عرض السكاشن
+ * sections render
  */
 
 include $sectionsPath . "hero.php";
