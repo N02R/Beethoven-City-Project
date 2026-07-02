@@ -6,7 +6,9 @@ require_once __DIR__ . "/includes/bootstrap.php";
 require_once __DIR__ . "/app/Services/HomeService.php";
 
 /**
+ * ============================
  * DB CONNECTION
+ * ============================
  */
 $conn = new mysqli("127.0.0.1", "root", "", "cms_dev");
 $conn->set_charset("utf8mb4");
@@ -16,13 +18,17 @@ if ($conn->connect_error) {
 }
 
 /**
+ * ============================
  * PAGE
+ * ============================
  */
 $page = $_GET['page'] ?? 'home';
 $page = basename(trim($page));
 
 /**
- * COMMON
+ * ============================
+ * COMMON DATA
+ * ============================
  */
 $nav = content('navbar');
 $footer_data = content('footer');
@@ -31,11 +37,14 @@ $config = require __DIR__ . "/config.php";
 $page_config = $config['pages'][$page] ?? $config['pages']['404'];
 
 /**
- * HOME DATA
+ * ============================
+ * HOME DATA (DB)
+ * ============================
  */
 $hero = [];
 $services = [];
 $choose = [];
+$reviews = [];
 
 if ($page === 'home') {
 
@@ -44,10 +53,13 @@ if ($page === 'home') {
     $hero = HomeService::getHero($conn, $lang);
     $services = HomeService::getServices($conn, $lang);
     $choose = HomeService::getChoose($conn, $lang);
+    $reviews = HomeService::getReviews($conn, $lang);
 }
 
 /**
- * LOAD PAGE
+ * ============================
+ * LOAD PAGE FILE
+ * ============================
  */
 $filePath = __DIR__ . "/pages/{$page}.php";
 
@@ -58,7 +70,9 @@ if (!file_exists($filePath)) {
 }
 
 /**
+ * ============================
  * RENDER
+ * ============================
  */
 ob_start();
 include $filePath;

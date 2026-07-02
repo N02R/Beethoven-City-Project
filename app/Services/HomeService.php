@@ -2,6 +2,9 @@
 
 class HomeService
 {
+    /**
+     * HERO
+     */
     public static function getHero($conn, $lang)
     {
         $stmt = $conn->prepare("
@@ -16,6 +19,9 @@ class HomeService
         return $stmt->get_result()->fetch_assoc() ?? [];
     }
 
+    /**
+     * SERVICES
+     */
     public static function getServices($conn, $lang)
     {
         $stmt = $conn->prepare("
@@ -30,6 +36,7 @@ class HomeService
         $result = $stmt->get_result();
 
         $items = [];
+
         while ($row = $result->fetch_assoc()) {
             $items[] = $row;
         }
@@ -37,6 +44,9 @@ class HomeService
         return $items;
     }
 
+    /**
+     * CHOOSE SECTION
+     */
     public static function getChoose($conn, $lang)
     {
         $stmt = $conn->prepare("
@@ -51,10 +61,40 @@ class HomeService
         $result = $stmt->get_result();
 
         $items = [];
+
         while ($row = $result->fetch_assoc()) {
             $items[] = $row;
         }
 
         return $items;
+    }
+
+    /**
+     * REVIEWS (VIDEOS)
+     */
+    public static function getReviews($conn, $lang)
+    {
+        $stmt = $conn->prepare("
+            SELECT url, title
+            FROM review_videos
+            WHERE lang = ?
+            ORDER BY id ASC
+        ");
+
+        $stmt->bind_param("s", $lang);
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+
+        $videos = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $videos[] = $row;
+        }
+
+        return [
+            'title' => 'شاهد ماذا يقول عملاؤنا عنا',
+            'videos' => $videos
+        ];
     }
 }
