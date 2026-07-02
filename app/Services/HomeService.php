@@ -28,6 +28,7 @@ class HomeService
             SELECT title, image, link, alt
             FROM service_items
             WHERE lang = ?
+            ORDER BY id ASC
         ");
 
         $stmt->bind_param("s", $lang);
@@ -45,7 +46,7 @@ class HomeService
     }
 
     /**
-     * CHOOSE SECTION
+     * CHOOSE
      */
     public static function getChoose($conn, $lang)
     {
@@ -53,6 +54,7 @@ class HomeService
             SELECT title, text, image, alt, active
             FROM choose_items
             WHERE lang = ?
+            ORDER BY id ASC
         ");
 
         $stmt->bind_param("s", $lang);
@@ -70,7 +72,7 @@ class HomeService
     }
 
     /**
-     * REVIEWS (VIDEOS)
+     * REVIEWS
      */
     public static function getReviews($conn, $lang)
     {
@@ -81,8 +83,8 @@ class HomeService
             ORDER BY id ASC
         ");
 
-        $stmt->bind_param("s", $lang);
         $stmt->execute();
+        $stmt->bind_param("s", $lang);
 
         $result = $stmt->get_result();
 
@@ -96,5 +98,31 @@ class HomeService
             'title' => 'شاهد ماذا يقول عملاؤنا عنا',
             'videos' => $videos
         ];
+    }
+
+    /**
+     * GUIDE
+     */
+    public static function getGuide($conn, $lang)
+    {
+        $stmt = $conn->prepare("
+            SELECT id, title, excerpt, image
+            FROM guide_items
+            WHERE lang = ?
+            ORDER BY id ASC
+        ");
+
+        $stmt->bind_param("s", $lang);
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+
+        $items = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $items[] = $row;
+        }
+
+        return $items;
     }
 }

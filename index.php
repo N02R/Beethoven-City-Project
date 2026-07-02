@@ -38,22 +38,24 @@ $page_config = $config['pages'][$page] ?? $config['pages']['404'];
 
 /**
  * ============================
- * HOME DATA (DB)
+ * HOME DATA
  * ============================
  */
 $hero = [];
 $services = [];
 $choose = [];
 $reviews = [];
+$guide = [];
 
 if ($page === 'home') {
 
     $lang = $_SESSION['lang'] ?? 'ar';
 
-    $hero = HomeService::getHero($conn, $lang);
+    $hero     = HomeService::getHero($conn, $lang);
     $services = HomeService::getServices($conn, $lang);
-    $choose = HomeService::getChoose($conn, $lang);
-    $reviews = HomeService::getReviews($conn, $lang);
+    $choose   = HomeService::getChoose($conn, $lang);
+    $reviews  = HomeService::getReviews($conn, $lang);
+    $guide    = HomeService::getGuide($conn, $lang);
 }
 
 /**
