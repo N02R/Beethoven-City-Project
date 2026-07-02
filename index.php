@@ -89,7 +89,7 @@ $dbPage = null;
 
 if ($page === 'home') {
 
-    $conn = new mysqli("localhost", "root", "", "cms_dev");
+    $conn = new mysqli("127.0.0.1", "root", "", "cms_dev");
     $conn->set_charset("utf8mb4");
 
     $stmt = $conn->prepare("SELECT title, content FROM pages WHERE slug = ? AND lang = ?");
