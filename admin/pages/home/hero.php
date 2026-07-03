@@ -32,6 +32,11 @@ $hero = $stmt->get_result()->fetch_assoc();
 <div class="container py-5">
 
     <h3 class="mb-4">تعديل Hero</h3>
+    <?php if (isset($_GET['success'])): ?>
+    <div class="alert alert-success">
+        تم حفظ التعديلات بنجاح ✔
+    </div>
+<?php endif; ?>
 
     <form method="POST" action="hero_update.php">
 
