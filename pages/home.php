@@ -4,10 +4,9 @@ $sectionsPath = "pages/includes/sections-home/";
 
 /**
  * ============================
- * PAGE DATA (SAFE ACCESS)
+ * SAFE PAGE DATA
  * ============================
  */
-
 $pageData = $pageData ?? [];
 
 /**
@@ -18,17 +17,19 @@ $hero = $pageData['hero'] ?? [];
 /**
  * SERVICES
  */
+$services = $pageData['services'] ?? [];
 $servicesData = [
-    'title' => $pageData['services']['title'] ?? 'خدماتنا',
-    'items' => $pageData['services']['items'] ?? []
+    'title' => $services['title'] ?? 'خدماتنا',
+    'items' => $services['items'] ?? []
 ];
 
 /**
  * CHOOSE
  */
+$choose = $pageData['choose'] ?? [];
 $chooseData = [
-    'title' => $pageData['choose']['title'] ?? 'ما الذي يميزنا',
-    'items' => $pageData['choose']['items'] ?? []
+    'title' => $choose['title'] ?? 'ما الذي يميزنا',
+    'items' => $choose['items'] ?? []
 ];
 
 /**
@@ -42,17 +43,19 @@ $reviewsData = $pageData['reviews'] ?? [
 /**
  * GUIDE
  */
+$guide = $pageData['guide'] ?? [];
 $guideData = [
-    'title' => $pageData['guide']['title'] ?? 'الدليل',
-    'items' => $pageData['guide']['items'] ?? []
+    'title' => $guide['title'] ?? 'الدليل',
+    'items' => $guide['items'] ?? []
 ];
 
 /**
- * FAQ (NEW SECTION)
+ * FAQ
  */
+$faq = $pageData['faq'] ?? [];
 $faqData = [
-    'title' => $pageData['faq']['title'] ?? 'الأسئلة الشائعة',
-    'items' => $pageData['faq']['items'] ?? []
+    'title' => $faq['title'] ?? 'الأسئلة الشائعة',
+    'items' => $faq['items'] ?? []
 ];
 
 /**
