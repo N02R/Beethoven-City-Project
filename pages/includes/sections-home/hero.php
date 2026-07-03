@@ -1,6 +1,6 @@
 <?php
 /**
- * Hero Section - CMS Ready Version
+ * Hero Section - CMS Ready Fixed Version
  */
 
 if (!isset($hero)) {
@@ -25,11 +25,14 @@ if (!isset($hero)) {
             <?= e($hero['description'] ?? 'نقدم أفضل الخدمات التعليمية والاحترافية') ?>
         </p>
 
+        <!-- ⚠️ زر منفصل (لا نجعله contenteditable لأنه عنصر link) -->
         <a href="<?= e($hero['button_link'] ?? '#') ?>" 
-           class="btn hero-btn <?= IS_ADMIN ? 'editable' : '' ?>" 
+           class="btn hero-btn <?= IS_ADMIN ? 'editable-text' : '' ?>" 
            data-field="button_text">
 
-            <?= e($hero['button_text'] ?? 'ابدأ الآن') ?>
+            <span>
+                <?= e($hero['button_text'] ?? 'ابدأ الآن') ?>
+            </span>
 
         </a>
 
@@ -56,7 +59,7 @@ if (!isset($hero)) {
 
     </div>
 
-    <!-- 🟢 SAVE BUTTON (ADMIN ONLY) -->
+    <!-- 🟢 SAVE BUTTON -->
     <?php if (IS_ADMIN): ?>
     <button onclick="saveHero()" class="btn btn-success mt-3">
         💾 Save Changes
@@ -68,19 +71,23 @@ if (!isset($hero)) {
 </section>
 
 <?php if (IS_ADMIN): ?>
-<!-- 🟢 CMS SCRIPT -->
+<!-- 🟢 CMS SCRIPT (FIXED) -->
 <script>
 
 let changes = {};
 
 /**
- * Capture edits
+ * 🟢 EDIT TEXT ELEMENTS ONLY (h1, p)
  */
 document.querySelectorAll('.editable').forEach(el => {
 
-    el.addEventListener('click', function () {
+    el.addEventListener('click', function (e) {
+
+        e.stopPropagation();
+
         this.setAttribute('contenteditable', 'true');
         this.focus();
+
     });
 
     el.addEventListener('blur', function () {
@@ -92,14 +99,53 @@ document.querySelectorAll('.editable').forEach(el => {
 
         changes[field] = value;
 
-        console.log("Captured:", changes);
+        console.log("Updated:", changes);
 
     });
 
 });
 
+
 /**
- * SAVE TO DATABASE
+ * 🟡 EDIT BUTTON TEXT (special handling)
+ */
+document.querySelectorAll('.editable-text').forEach(el => {
+
+    el.addEventListener('click', function (e) {
+
+        e.preventDefault(); // مهم حتى لا ينتقل الرابط
+
+        let span = this.querySelector('span');
+
+        if (!span) return;
+
+        span.setAttribute('contenteditable', 'true');
+        span.focus();
+
+    });
+
+    el.addEventListener('blur', function () {
+
+        let span = this.querySelector('span');
+
+        if (!span) return;
+
+        span.removeAttribute('contenteditable');
+
+        const field = this.dataset.field;
+        const value = span.innerText.trim();
+
+        changes[field] = value;
+
+        console.log("Button Updated:", changes);
+
+    });
+
+});
+
+
+/**
+ * 💾 SAVE TO DATABASE
  */
 function saveHero() {
 
