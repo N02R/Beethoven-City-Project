@@ -51,11 +51,33 @@ if ($page === 'home') {
 
     $lang = $_SESSION['lang'] ?? 'ar';
 
-    $hero     = HomeService::getHero($conn, $lang);
-    $services = HomeService::getServices($conn, $lang);
-    $choose   = HomeService::getChoose($conn, $lang);
-    $reviews  = HomeService::getReviews($conn, $lang);
-    $guide    = HomeService::getGuide($conn, $lang);
+    /**
+     * HERO
+     */
+    $hero = HomeService::getHero($conn, $lang);
+
+    /**
+     * SERVICES (Data Contract Standardized)
+     */
+    $services = [
+        'title' => 'خدماتنا',
+        'items' => HomeService::getServices($conn, $lang)
+    ];
+
+    /**
+     * CHOOSE (سيتم توحيده في الخطوة التالية)
+     */
+    $choose = HomeService::getChoose($conn, $lang);
+
+    /**
+     * REVIEWS
+     */
+    $reviews = HomeService::getReviews($conn, $lang);
+
+    /**
+     * GUIDE
+     */
+    $guide = HomeService::getGuide($conn, $lang);
 }
 
 /**
