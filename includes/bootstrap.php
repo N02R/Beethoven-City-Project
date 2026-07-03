@@ -77,3 +77,6 @@ define('IS_ADMIN',
     isset($_SESSION['admin_logged_in']) &&
     $_SESSION['admin_logged_in'] === true
 );
+
+var_dump($_SESSION);
+exit;
