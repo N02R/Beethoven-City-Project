@@ -4,17 +4,34 @@ ini_set('display_errors', 1);
 
 session_start();
 
+/**
+ * 🔐 حماية الدخول
+ */
 if (!isset($_SESSION['admin_logged_in'])) {
     header("Location: ../login.php");
     exit;
 }
 
+/**
+ * 🔥 تحميل النظام الأساسي (BASE_URL + helpers)
+ */
+require_once __DIR__ . "/../../includes/bootstrap.php";
+
+/**
+ * 🔌 الاتصال بقاعدة البيانات
+ */
 $conn = new mysqli("127.0.0.1", "root", "", "cms_dev");
 $conn->set_charset("utf8mb4");
 
+/**
+ * 📦 جلب بيانات Hero
+ */
 $stmt = $conn->prepare("SELECT * FROM pages WHERE slug = 'home_hero' LIMIT 1");
 $stmt->execute();
-$hero = $stmt->get_result()->fetch_assoc();
+
+$result = $stmt->get_result();
+$hero = $result ? $result->fetch_assoc() : [];
+
 ?>
 
 <!DOCTYPE html>
@@ -24,7 +41,7 @@ $hero = $stmt->get_result()->fetch_assoc();
     <meta charset="UTF-8">
     <title>Live Hero Editor</title>
 
-    <!-- 🔥 REAL WEBSITE STYLE -->
+    <!-- 🎨 REAL WEBSITE STYLE -->
     <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/style.css">
 
@@ -34,12 +51,12 @@ $hero = $stmt->get_result()->fetch_assoc();
             background: #0f172a;
         }
 
-        /* Editor wrapper */
+        /* 🟢 Editor wrapper */
         .editor-wrap {
             position: relative;
         }
 
-        /* Overlay edit effect */
+        /* ✏️ Editable effect */
         .editable {
             cursor: pointer;
             transition: 0.2s;
@@ -50,7 +67,7 @@ $hero = $stmt->get_result()->fetch_assoc();
             outline-offset: 4px;
         }
 
-        /* Save panel */
+        /* 🟣 Save panel */
         .save-panel {
             position: fixed;
             top: 20px;
@@ -60,34 +77,37 @@ $hero = $stmt->get_result()->fetch_assoc();
             padding: 15px;
             border-radius: 12px;
             z-index: 9999;
-            width: 200px;
+            width: 220px;
         }
 
         .save-panel button {
             width: 100%;
         }
 
-        /* Smooth preview feel */
-        section.hero {
-            position: relative;
+        /* 🖼️ Hero image */
+        .hero-image img {
+            max-width: 100%;
+            border-radius: 10px;
         }
     </style>
 </head>
 
 <body>
 
-<!-- 🟣 SAVE PANEL -->
+<!-- 🟣 CONTROL PANEL -->
 <div class="save-panel">
     <h6>Live Editor</h6>
+
     <button class="btn btn-success btn-sm mt-2" onclick="saveChanges()">
-        Save
+        Save Changes
     </button>
+
     <p style="font-size:12px; margin-top:10px;">
-        Click text to edit
+        ✏️ Click text to edit
     </p>
 </div>
 
-<!-- 🟢 HERO (REAL DESIGN) -->
+<!-- 🟢 HERO PREVIEW (REAL DESIGN) -->
 <div class="editor-wrap">
 
 <section class="hero py-5">
@@ -98,15 +118,17 @@ $hero = $stmt->get_result()->fetch_assoc();
 
       <div class="hero-content">
 
-        <h1 class="editable" data-field="title_text">
+        <h1 class="editable" contenteditable="true" data-field="title_text">
           <?= htmlspecialchars($hero['title_text'] ?? '') ?>
         </h1>
 
-        <p class="editable" data-field="description">
+        <p class="editable" contenteditable="true" data-field="description">
           <?= htmlspecialchars($hero['description'] ?? '') ?>
         </p>
 
-        <a class="btn btn-primary editable" data-field="button_text">
+        <a class="btn btn-primary editable"
+           contenteditable="true"
+           data-field="button_text">
           <?= htmlspecialchars($hero['button_text'] ?? '') ?>
         </a>
 
@@ -127,11 +149,14 @@ $hero = $stmt->get_result()->fetch_assoc();
 
 </div>
 
-<!-- 🟡 JS ENGINE -->
+<!-- 🟡 JAVASCRIPT ENGINE -->
 <script>
 
 let changes = {};
 
+/**
+ * Capture changes
+ */
 document.querySelectorAll('.editable').forEach(el => {
 
     el.addEventListener('input', function () {
@@ -142,7 +167,7 @@ document.querySelectorAll('.editable').forEach(el => {
 });
 
 /**
- * SAVE CHANGES
+ * 💾 SAVE FUNCTION
  */
 function saveChanges() {
 
