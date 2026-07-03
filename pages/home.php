@@ -6,20 +6,18 @@ $sectionsPath = "pages/includes/sections-home/";
  * ضمان عدم كسر الـ views
  */
 
+// Hero (كما هو)
 $hero = $hero ?? [];
 
-$services = [
-    'title' => 'خدماتنا',
-    'items' => $services ?? []
-];
+/**
+ * مهم: لا نغلف البيانات
+ * لأن الـ services.php و choose.php يتوقعون arrays مباشرة
+ */
 
-$choose = [
-    'title' => 'ما الذي يميز بيتهوفن سيتي',
-    'items' => $choose ?? []
-];
-
-$reviews = $reviews ?? [];
-$guide   = $guide ?? [];
+$servicesData = $services ?? [];
+$chooseData   = $choose ?? [];
+$reviewsData  = $reviews ?? [];
+$guideData    = $guide ?? [];
 
 /**
  * sections render
