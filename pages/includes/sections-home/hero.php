@@ -1,6 +1,6 @@
 <?php
 /**
- * Hero Section - Home Page
+ * Hero Section - CMS Ready Version
  */
 
 if (!isset($hero)) {
@@ -26,7 +26,7 @@ if (!isset($hero)) {
         </p>
 
         <a href="<?= e($hero['button_link'] ?? '#') ?>" 
-           class="btn btn-primary <?= IS_ADMIN ? 'editable' : '' ?>" 
+           class="btn hero-btn <?= IS_ADMIN ? 'editable' : '' ?>" 
            data-field="button_text">
 
             <?= e($hero['button_text'] ?? 'ابدأ الآن') ?>
@@ -39,7 +39,7 @@ if (!isset($hero)) {
       <div class="hero-image">
 
         <?php if (!empty($hero['image'])): ?>
-            
+
             <img src="<?= BASE_URL . 'assets/img/' . e($hero['image']) ?>" 
                  class="img-fluid" 
                  alt="<?= e($hero['alt_text'] ?? 'hero image') ?>">
@@ -56,14 +56,26 @@ if (!isset($hero)) {
 
     </div>
 
+    <!-- 🟢 SAVE BUTTON (ADMIN ONLY) -->
+    <?php if (IS_ADMIN): ?>
+    <button onclick="saveHero()" class="btn btn-success mt-3">
+        💾 Save Changes
+    </button>
+    <?php endif; ?>
+
   </div>
 
 </section>
 
 <?php if (IS_ADMIN): ?>
-<!-- 🟢 INLINE EDIT SCRIPT (Stage 1 فقط: Live Edit بدون حفظ) -->
+<!-- 🟢 CMS SCRIPT -->
 <script>
 
+let changes = {};
+
+/**
+ * Capture edits
+ */
 document.querySelectorAll('.editable').forEach(el => {
 
     el.addEventListener('click', function () {
@@ -72,15 +84,52 @@ document.querySelectorAll('.editable').forEach(el => {
     });
 
     el.addEventListener('blur', function () {
+
         this.removeAttribute('contenteditable');
 
-        console.log("Edited:", {
-            field: this.dataset.field,
-            value: this.innerText.trim()
-        });
+        const field = this.dataset.field;
+        const value = this.innerText.trim();
+
+        changes[field] = value;
+
+        console.log("Captured:", changes);
+
     });
 
 });
+
+/**
+ * SAVE TO DATABASE
+ */
+function saveHero() {
+
+    if (Object.keys(changes).length === 0) {
+        alert("No changes to save");
+        return;
+    }
+
+    fetch('<?= BASE_URL ?>admin/editor/hero_live_update.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(changes)
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if (data.status === 'success') {
+            alert('Saved ✔');
+            location.reload();
+        } else {
+            alert('Error: ' + data.message);
+        }
+
+        console.log(data);
+
+    });
+
+}
 
 </script>
 <?php endif; ?>
