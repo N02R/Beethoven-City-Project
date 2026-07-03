@@ -67,7 +67,10 @@ if ($page === 'home') {
     /**
      * CHOOSE (سيتم توحيده في الخطوة التالية)
      */
-    $choose = HomeService::getChoose($conn, $lang);
+    $choose = [
+    'title' => 'ما الذي يميز بيتهوفن سيتي',
+    'items' => HomeService::getChoose($conn, $lang)
+];
 
     /**
      * REVIEWS
