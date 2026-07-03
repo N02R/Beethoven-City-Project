@@ -77,13 +77,11 @@ if (!isset($hero)) {
 let changes = {};
 
 /**
- * 🟢 Activate editing properly
+ * 🟢 EDIT ANY TEXT ELEMENT
  */
 document.querySelectorAll('.editable').forEach(el => {
     
-    el.addEventListener('click', function(e) {
-        
-        e.stopPropagation();
+    el.addEventListener('click', function() {
         
         this.setAttribute('contenteditable', 'true');
         this.focus();
@@ -93,9 +91,7 @@ document.querySelectorAll('.editable').forEach(el => {
     el.addEventListener('input', function() {
         
         const field = this.dataset.field;
-        const value = this.innerText.trim();
-        
-        changes[field] = value;
+        changes[field] = this.innerText.trim();
         
         console.log("Typing:", changes);
         
@@ -104,50 +100,48 @@ document.querySelectorAll('.editable').forEach(el => {
     el.addEventListener('blur', function() {
         
         this.removeAttribute('contenteditable');
+        
     });
     
 });
 
 
 /**
- * 🟡 BUTTON FIX (CRITICAL FIX)
+ * 🟡 BUTTON FIX (SAFE VERSION)
  */
 document.querySelectorAll('.editable-text').forEach(el => {
     
     el.addEventListener('click', function(e) {
         
         e.preventDefault();
-        e.stopPropagation();
         
         let span = this.querySelector('span');
+        
+        if (!span) return;
         
         span.setAttribute('contenteditable', 'true');
         span.focus();
         
-    });
-    
-    span = null;
-    
-    el.querySelector('span').addEventListener('input', function() {
+        span.addEventListener('input', function() {
+            
+            const field = el.dataset.field;
+            changes[field] = this.innerText.trim();
+            
+            console.log("Button typing:", changes);
+            
+        });
         
-        const field = this.closest('a').dataset.field;
-        const value = this.innerText.trim();
+        span.addEventListener('blur', function() {
+            this.removeAttribute('contenteditable');
+        });
         
-        changes[field] = value;
-        
-        console.log("Button typing:", changes);
-        
-    });
-    
-    el.querySelector('span').addEventListener('blur', function() {
-        this.removeAttribute('contenteditable');
     });
     
 });
 
 
 /**
- * 💾 SAVE FUNCTION (UNCHANGED BUT SAFE)
+ * 💾 SAVE FUNCTION
  */
 function saveHero() {
     
