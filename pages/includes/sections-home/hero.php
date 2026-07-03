@@ -61,10 +61,8 @@ document.querySelectorAll('.editable').forEach(el => {
 
         this.removeAttribute('contenteditable');
 
-        console.log('Updated:', {
-            field: this.dataset.field,
-            value: this.innerText
-        });
+        console.log("Updated field:", this.dataset.field);
+        console.log("Value:", this.innerText);
 
     });
 

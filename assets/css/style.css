@@ -77,6 +77,13 @@
   background-color: var(--main-color) !important; /* نضمن ثبات اللون */
   color: var(--white) !important;
 }
+
+.editable:hover {
+  outline: 2px dashed #0d6efd;
+  outline-offset: 4px;
+  cursor: pointer;
+  transition: 0.2s;
+}
 /* hero style end */
 /* services style start */
 .services {
