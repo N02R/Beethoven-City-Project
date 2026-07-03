@@ -14,42 +14,55 @@ if (!isset($_SESSION['admin_logged_in'])) {
 $conn = new mysqli("127.0.0.1", "root", "", "cms_dev");
 $conn->set_charset("utf8mb4");
 
-$data = json_decode(file_get_contents("php://input"), true);
+/**
+ * TEXT DATA
+ */
+$data = json_decode($_POST['data'] ?? '{}', true);
 
-if (!$data) {
-    echo json_encode([
-        'status' => 'error',
-        'message' => 'No data received'
-    ]);
-    exit;
+/**
+ * IMAGE UPLOAD
+ */
+$imageName = null;
+
+if (!empty($_FILES['image']['name'])) {
+
+    $imageName = time() . '_' . $_FILES['image']['name'];
+
+    $target = __DIR__ . "/../../assets/img/" . $imageName;
+
+    move_uploaded_file($_FILES['image']['tmp_name'], $target);
 }
 
-$title_text  = $data['title_text'] ?? '';
-$description = $data['description'] ?? '';
-$button_text = $data['button_text'] ?? '';
+/**
+ * VALUES
+ */
+$title = $data['title_text'] ?? '';
+$desc = $data['description'] ?? '';
+$btn = $data['button_text'] ?? '';
 
-$stmt = $conn->prepare("
-    UPDATE pages 
-    SET title_text = ?, 
-        description = ?, 
-        button_text = ?
-    WHERE slug = 'home_hero'
-");
+/**
+ * UPDATE QUERY
+ */
+if ($imageName) {
 
-if (!$stmt) {
-    echo json_encode([
-        'status' => 'error',
-        'message' => $conn->error
-    ]);
-    exit;
+    $stmt = $conn->prepare("
+        UPDATE pages 
+        SET title_text=?, description=?, button_text=?, image=? 
+        WHERE slug='home_hero'
+    ");
+
+    $stmt->bind_param("ssss", $title, $desc, $btn, $imageName);
+
+} else {
+
+    $stmt = $conn->prepare("
+        UPDATE pages 
+        SET title_text=?, description=?, button_text=? 
+        WHERE slug='home_hero'
+    ");
+
+    $stmt->bind_param("sss", $title, $desc, $btn);
 }
-
-$stmt->bind_param(
-    "sss",
-    $title_text,
-    $description,
-    $button_text
-);
 
 if ($stmt->execute()) {
 
@@ -62,6 +75,6 @@ if ($stmt->execute()) {
 
     echo json_encode([
         'status' => 'error',
-        'message' => 'Update failed'
+        'message' => $conn->error
     ]);
 }

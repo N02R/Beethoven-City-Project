@@ -4,34 +4,21 @@ ini_set('display_errors', 1);
 
 session_start();
 
-/**
- * 🔐 حماية الدخول
- */
 if (!isset($_SESSION['admin_logged_in'])) {
     header("Location: ../login.php");
     exit;
 }
 
-/**
- * 🔥 تحميل النظام الأساسي (BASE_URL + helpers)
- */
 require_once __DIR__ . "/../../includes/bootstrap.php";
 
-/**
- * 🔌 الاتصال بقاعدة البيانات
- */
 $conn = new mysqli("127.0.0.1", "root", "", "cms_dev");
 $conn->set_charset("utf8mb4");
 
-/**
- * 📦 جلب بيانات Hero
- */
 $stmt = $conn->prepare("SELECT * FROM pages WHERE slug = 'home_hero' LIMIT 1");
 $stmt->execute();
 
 $result = $stmt->get_result();
 $hero = $result ? $result->fetch_assoc() : [];
-
 ?>
 
 <!DOCTYPE html>
@@ -51,12 +38,12 @@ $hero = $result ? $result->fetch_assoc() : [];
             background: #0f172a;
         }
 
-        /* 🟢 Editor wrapper */
+        /* Editor */
         .editor-wrap {
             position: relative;
         }
 
-        /* ✏️ Editable effect */
+        /* Editable hover */
         .editable {
             cursor: pointer;
             transition: 0.2s;
@@ -67,7 +54,7 @@ $hero = $result ? $result->fetch_assoc() : [];
             outline-offset: 4px;
         }
 
-        /* 🟣 Save panel */
+        /* Save panel */
         .save-panel {
             position: fixed;
             top: 20px;
@@ -77,14 +64,13 @@ $hero = $result ? $result->fetch_assoc() : [];
             padding: 15px;
             border-radius: 12px;
             z-index: 9999;
-            width: 220px;
+            width: 230px;
         }
 
         .save-panel button {
             width: 100%;
         }
 
-        /* 🖼️ Hero image */
         .hero-image img {
             max-width: 100%;
             border-radius: 10px;
@@ -94,20 +80,25 @@ $hero = $result ? $result->fetch_assoc() : [];
 
 <body>
 
-<!-- 🟣 CONTROL PANEL -->
+<!-- 🟣 PANEL -->
 <div class="save-panel">
-    <h6>Live Editor</h6>
 
-    <button class="btn btn-success btn-sm mt-2" onclick="saveChanges()">
+    <h6>Live Hero Editor</h6>
+
+    <!-- IMAGE UPLOAD -->
+    <input type="file" id="imageInput" class="form-control form-control-sm mt-2">
+
+    <button class="btn btn-success btn-sm mt-3" onclick="saveChanges()">
         Save Changes
     </button>
 
     <p style="font-size:12px; margin-top:10px;">
         ✏️ Click text to edit
     </p>
+
 </div>
 
-<!-- 🟢 HERO PREVIEW (REAL DESIGN) -->
+<!-- 🟢 HERO (REAL DESIGN) -->
 <div class="editor-wrap">
 
 <section class="hero py-5">
@@ -119,17 +110,17 @@ $hero = $result ? $result->fetch_assoc() : [];
       <div class="hero-content">
 
         <h1 class="editable" contenteditable="true" data-field="title_text">
-          <?= htmlspecialchars($hero['title_text'] ?? '') ?>
+            <?= htmlspecialchars($hero['title_text'] ?? '') ?>
         </h1>
 
         <p class="editable" contenteditable="true" data-field="description">
-          <?= htmlspecialchars($hero['description'] ?? '') ?>
+            <?= htmlspecialchars($hero['description'] ?? '') ?>
         </p>
 
         <a class="btn btn-primary editable"
            contenteditable="true"
            data-field="button_text">
-          <?= htmlspecialchars($hero['button_text'] ?? '') ?>
+            <?= htmlspecialchars($hero['button_text'] ?? '') ?>
         </a>
 
       </div>
@@ -137,6 +128,7 @@ $hero = $result ? $result->fetch_assoc() : [];
       <?php if (!empty($hero['image'])): ?>
         <div class="hero-image">
             <img src="<?= BASE_URL . 'assets/img/' . $hero['image'] ?>"
+                 id="previewImage"
                  class="img-fluid">
         </div>
       <?php endif; ?>
@@ -149,34 +141,61 @@ $hero = $result ? $result->fetch_assoc() : [];
 
 </div>
 
-<!-- 🟡 JAVASCRIPT ENGINE -->
+<!-- 🟡 JS ENGINE -->
 <script>
 
 let changes = {};
+let imageFile = null;
 
 /**
- * Capture changes
+ * TEXT EDITS
  */
 document.querySelectorAll('.editable').forEach(el => {
 
     el.addEventListener('input', function () {
         let field = this.dataset.field;
-        changes[field] = this.innerText;
+        if (field) {
+            changes[field] = this.innerText;
+        }
     });
 
 });
 
 /**
- * 💾 SAVE FUNCTION
+ * IMAGE PREVIEW
+ */
+document.getElementById('imageInput').addEventListener('change', function(e) {
+
+    imageFile = e.target.files[0];
+
+    if (imageFile) {
+
+        let reader = new FileReader();
+
+        reader.onload = function(e) {
+            document.getElementById('previewImage').src = e.target.result;
+        };
+
+        reader.readAsDataURL(imageFile);
+    }
+});
+
+/**
+ * SAVE FUNCTION
  */
 function saveChanges() {
 
+    let formData = new FormData();
+
+    formData.append('data', JSON.stringify(changes));
+
+    if (imageFile) {
+        formData.append('image', imageFile);
+    }
+
     fetch('hero_live_update.php', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(changes)
+        body: formData
     })
     .then(res => res.json())
     .then(data => {
