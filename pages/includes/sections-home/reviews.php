@@ -3,17 +3,23 @@
  * @var array $reviews 
  */
 
-if (empty($reviews['videos']) || !is_array($reviews['videos'])) {
+$videos = $reviews['videos'] ?? [];
+
+if (!is_array($videos) || empty($videos)) {
+    // عرض رسالة بدل كسر الصفحة (أفضل في CMS)
+    echo '<p class="text-center py-5">لا توجد فيديوهات حالياً</p>';
     return;
 }
+
+$title = $reviews['title'] ?? 'آراء عملاء بيتهوفن سيتي';
 ?>
 
-<section class="reviews py-5" aria-label="<?= e($reviews['title'] ?? 'آراء عملاء بيتهوفن سيتي') ?>">
+<section class="reviews py-5" aria-label="<?= e($title) ?>">
     <div class="reviews-bg">
         <div class="custom-container">
 
             <h2 class="py-5 text-center sec-title">
-                <?= e($reviews['title']) ?>
+                <?= e($title) ?>
             </h2>
 
         </div>
@@ -26,7 +32,7 @@ if (empty($reviews['videos']) || !is_array($reviews['videos'])) {
 
                 <div class="carousel-inner">
 
-                    <?php foreach ($reviews['videos'] as $index => $video): ?>
+                    <?php foreach ($videos as $index => $video): ?>
 
                         <div class="carousel-item <?= ($index === 0) ? 'active' : '' ?>">
 
@@ -35,7 +41,7 @@ if (empty($reviews['videos']) || !is_array($reviews['videos'])) {
 
                                     <iframe
                                         src="<?= $video['url'] ?>"
-                                        title="<?= e($video['title']) ?>"
+                                        title="<?= e($video['title'] ?? '') ?>"
                                         allowfullscreen
                                         loading="lazy"
                                         style="border: 0;">
@@ -53,7 +59,7 @@ if (empty($reviews['videos']) || !is_array($reviews['videos'])) {
                 <!-- Dots -->
                 <div class="dots mt-4" role="tablist">
 
-                    <?php foreach ($reviews['videos'] as $index => $video): ?>
+                    <?php foreach ($videos as $index => $video): ?>
 
                         <span class="dot <?= ($index === 0) ? 'active' : '' ?>"
                               data-bs-target="#carousel-reviews"

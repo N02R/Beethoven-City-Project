@@ -2,17 +2,17 @@
 /** @var array $servicesData */
 ?>
 
-<section class="services py-5" aria-label="خدماتنا المميزة">
+<section class="services py-5" aria-label="<?= $servicesData['title'] ?? 'services' ?>">
   <div class="custom-container">
 
     <h2 class="mb-5 sec-title">
-      خدماتنا
+      <?= $servicesData['title'] ?? 'خدماتنا' ?>
     </h2>
 
     <div class="row g-4">
 
-      <?php if (!empty($servicesData) && is_array($servicesData)): ?>
-        <?php foreach ($servicesData as $item): ?>
+      <?php if (!empty($servicesData['items']) && is_array($servicesData['items'])): ?>
+        <?php foreach ($servicesData['items'] as $item): ?>
 
           <div class="col-lg-6 col-md-6 col-sm-12">
 
@@ -22,7 +22,6 @@
 
               <div class="card">
 
-                <!-- نفس ستايلك بالضبط -->
                 <img src="<?= BASE_URL . $item['image'] ?>"
                      alt="<?= $item['alt'] ?>"
                      width="600" height="400"

@@ -20,9 +20,9 @@ $chooseData = $choose ?? [
     'items' => []
 ];
 
-$reviewsData = $reviews ?? [
-    'title' => '',
-    'videos' => []
+$reviewsData = [
+    'title' => $reviews['title'] ?? 'شاهد ماذا يقول عملاؤنا عنا',
+    'videos' => $reviews['videos'] ?? []
 ];
 
 $guideData = $guide ?? [
