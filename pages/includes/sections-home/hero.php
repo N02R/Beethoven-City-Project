@@ -6,13 +6,13 @@
 
       <div class="hero-content">
 
-        <h1>
-          <?= e($hero['title_text'] ?? '') ?>
-        </h1>
+<h1 class="<?= IS_ADMIN ? 'editable' : '' ?>" data-field="title_text">
+  <?= e($hero['title_text'] ?? '') ?>
+</h1>
 
-        <p>
-          <?= e($hero['description'] ?? '') ?>
-        </p>
+        <p class="<?= IS_ADMIN ? 'editable' : '' ?>" data-field="description">
+  <?= e($hero['description'] ?? '') ?>
+</p>
 
         <?php if (!empty($hero['button_text'])): ?>
           <a href="<?= e($hero['button_link'] ?? '#') ?>" 
@@ -43,3 +43,33 @@
   </div>
 
 </section>
+
+<?php if (IS_ADMIN): ?>
+
+<script>
+
+document.querySelectorAll('.editable').forEach(el => {
+
+    el.addEventListener('click', function () {
+
+        this.setAttribute('contenteditable', 'true');
+        this.focus();
+
+    });
+
+    el.addEventListener('blur', function () {
+
+        this.removeAttribute('contenteditable');
+
+        console.log('Updated:', {
+            field: this.dataset.field,
+            value: this.innerText
+        });
+
+    });
+
+});
+
+</script>
+
+<?php endif; ?>

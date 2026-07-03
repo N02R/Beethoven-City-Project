@@ -4,10 +4,13 @@
  * @var string $page 
  * @var array $page_config 
  */
+
 if (!defined('BASE_URL')) { exit('No direct script access allowed'); }
-// 1. جلب اللغة الحالية من الجلسة (Session)
+
+// اللغة الحالية
 $lang = $_SESSION['lang'] ?? 'ar'; 
 ?>
+
 <!DOCTYPE html>
 <html lang="<?= $lang ?>" dir="<?= ($lang == 'en') ? 'ltr' : 'rtl' ?>">
 
@@ -54,8 +57,12 @@ $lang = $_SESSION['lang'] ?? 'ar';
 
 </head>
 
-<body class="lang-<?= e($lang) ?>">
-    <!-- إضافة ARIA للـ Loader لتحسين الوصول -->
-    <div id="loader-wrapper" role="status" aria-live="polite">
-        <div class="loader"></div>
-    </div>
+<body class="lang-<?= e($lang) ?> <?= IS_ADMIN ? 'is-admin' : '' ?>">
+
+<!-- 🧠 Visual CMS BAR (Admin only) -->
+<?php include __DIR__ . '/editor-bar.php'; ?>
+
+<!-- Loader -->
+<div id="loader-wrapper" role="status" aria-live="polite">
+    <div class="loader"></div>
+</div>

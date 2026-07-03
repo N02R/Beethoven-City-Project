@@ -1,0 +1,60 @@
+<?php if (IS_ADMIN): ?>
+
+<!-- VISUAL CMS BAR -->
+<div id="cms-bar">
+
+    <div class="cms-left">
+        🧠 Beethoven Visual CMS
+    </div>
+
+    <div class="cms-right">
+
+        <button onclick="toggleEditMode()" class="cms-btn">
+            ✏️ Edit Mode
+        </button>
+
+        <button onclick="alert('Saved!')" class="cms-btn save">
+            💾 Save
+        </button>
+
+    </div>
+
+</div>
+
+<style>
+#cms-bar{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 55px;
+    background: #111827;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+    z-index: 999999;
+    font-family: Arial;
+}
+
+.cms-btn{
+    background: #374151;
+    border: none;
+    color: #fff;
+    padding: 6px 12px;
+    margin-left: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.cms-btn.save{
+    background: #16a34a;
+}
+
+body{
+    padding-top: 55px;
+}
+</style>
+
+<?php endif; ?>
