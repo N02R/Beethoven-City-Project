@@ -3,7 +3,6 @@
 header('Content-Type: text/html; charset=utf-8');
 
 require_once __DIR__ . "/includes/bootstrap.php";
-require_once __DIR__ . "/app/Services/HomeService.php";
 
 /**
  * ============================
@@ -19,67 +18,61 @@ if ($conn->connect_error) {
 
 /**
  * ============================
- * PAGE
+ * ROUTING
  * ============================
  */
 $page = $_GET['page'] ?? 'home';
-$page = basename(trim($page));
+$page = ucfirst(basename(trim($page)));
 
 /**
  * ============================
- * COMMON DATA
+ * GLOBAL CONTENT
  * ============================
  */
-$nav = content('navbar');
-$footer_data = content('footer');
+require_once __DIR__ . "/app/Services/GlobalService.php";
 
-$config = require __DIR__ . "/config.php";
-$page_config = $config['pages'][$page] ?? $config['pages']['404'];
+$globalData = GlobalService::getGlobalData(strtolower($page));
+extract($globalData);
 
 /**
  * ============================
- * HOME DATA (UNIFIED CONTRACT)
+ * CONTROLLER LOADER (AUTO)
  * ============================
  */
+$lang = $_SESSION['lang'] ?? 'ar';
 
-$hero = [];
-$servicesData = [];
-$chooseData = [];
-$reviewsData = [];
-$guideData = [];
+$controllerClass = $page . 'Controller';
+$controllerFile = __DIR__ . "/app/Controllers/{$controllerClass}.php";
 
-if ($page === 'home') {
+$data = [];
 
-    $lang = $_SESSION['lang'] ?? 'ar';
+if (file_exists($controllerFile)) {
 
-    // HERO
-    $hero = HomeService::getHero($conn, $lang);
+    require_once $controllerFile;
 
-    // SERVICES
-    $servicesData = [
-        'title' => 'خدماتنا',
-        'items' => HomeService::getServices($conn, $lang)
-    ];
+    if (class_exists($controllerClass)) {
+        $data = $controllerClass::index($conn, $lang);
+    }
 
-    // CHOOSE
-    $chooseData = [
-        'title' => 'ما الذي يميز بيتهوفن سيتي',
-        'items' => HomeService::getChoose($conn, $lang)
-    ];
+} else {
 
-    // REVIEWS
-    $reviewsData = HomeService::getReviews($conn, $lang);
+    http_response_code(404);
 
-    // GUIDE
-    $guideData = [
-        'title' => 'دليل بيتهوفن',
-        'items' => HomeService::getGuide($conn, $lang)
-    ];
+    require_once __DIR__ . "/app/Controllers/ErrorController.php";
+
+    $data = ErrorController::index($conn, $lang);
 }
 
 /**
  * ============================
- * LOAD PAGE FILE
+ * VIEW DATA
+ * ============================
+ */
+extract($data);
+
+/**
+ * ============================
+ * LOAD VIEW
  * ============================
  */
 $filePath = __DIR__ . "/pages/{$page}.php";

@@ -1,40 +1,47 @@
-<?php
+<?php 
 /** 
  * @var array $faq 
  */
+
+$title = $faq['title'] ?? 'الأسئلة الشائعة';
+$items = $faq['items'] ?? [];
 ?>
-<section class="popular py-5" aria-label="الأسئلة الشائعة عن الدراسة في ألمانيا">
+
+<section class="popular py-5" aria-label="<?= e($title) ?>">
   <div class="container-fluid custom-container">
 
     <h2 class="sec-title mb-5">
-      <?= e($faq['title'] ?? 'الأسئلة الشائعة') ?>
+      <?= e($title) ?>
     </h2>
 
     <div class="accordion mb-5" id="accordionFAQ">
 
-      <?php if (!empty($faq['items']) && is_array($faq['items'])): ?>
-        <?php foreach ($faq['items'] as $index => $item): ?>
+      <?php if (!empty($items) && is_array($items)): ?>
+        <?php foreach ($items as $index => $item): ?>
 
           <?php
-            // توليد معرفات فريدة لكل عنصر في الأكورديون
             $id = $index + 1;
             $headingId = "heading" . $id;
             $collapseId = "collapse" . $id;
+
+            $question = $item['question'] ?? '';
+            $answer = $item['answer'] ?? '';
           ?>
 
           <div class="accordion-item">
             <h3 class="accordion-header" id="<?= $headingId ?>">
+
               <button class="accordion-button <?= $index === 0 ? '' : 'collapsed' ?>" 
                       type="button" 
                       data-bs-toggle="collapse" 
                       data-bs-target="#<?= $collapseId ?>" 
                       aria-expanded="<?= $index === 0 ? 'true' : 'false' ?>" 
                       aria-controls="<?= $collapseId ?>">
-                
-                <!-- حماية نص السؤال -->
-                <?= e($item['question']) ?>
+
+                <?= e($question) ?>
 
               </button>
+
             </h3>
 
             <div id="<?= $collapseId ?>" 
@@ -43,15 +50,21 @@
                  data-bs-parent="#accordionFAQ">
 
               <div class="accordion-body">
-                <!-- حماية نص الإجابة مع السماح بكسر الأسطر (New Lines) -->
-                <?= nl2br(e($item['answer'])) ?>
+                <?= nl2br(e($answer)) ?>
               </div>
+
             </div>
           </div>
 
         <?php endforeach; ?>
       <?php else: ?>
-        <p class="text-center"><?= e($_SESSION['lang'] == 'en' ? 'No FAQs available.' : 'لا توجد أسئلة شائعة متوفرة حالياً.') ?></p>
+
+        <p class="text-center">
+          <?= e(($_SESSION['lang'] ?? 'ar') === 'en'
+            ? 'No FAQs available.'
+            : 'لا توجد أسئلة شائعة متوفرة حالياً.') ?>
+        </p>
+
       <?php endif; ?>
 
     </div>

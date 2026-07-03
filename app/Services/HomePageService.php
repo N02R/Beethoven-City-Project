@@ -1,10 +1,8 @@
 <?php
 
-require_once __DIR__ . "/../Services/HomeService.php";
-
-class HomeController
+class HomePageService
 {
-    public static function index($conn, $lang)
+    public static function getPageData($conn, $lang)
     {
         return [
             'hero' => HomeService::getHero($conn, $lang),

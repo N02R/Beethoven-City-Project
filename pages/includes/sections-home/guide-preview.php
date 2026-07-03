@@ -3,12 +3,18 @@
 
 $items = $guideData['items'] ?? [];
 
-if (!is_array($items) || empty($items)) {
-    echo '<p class="text-center py-5">لا توجد مقالات حالياً</p>';
-    return;
-}
-
 $title = $guideData['title'] ?? 'الدليل';
+
+if (!is_array($items) || empty($items)) {
+?>
+
+  <p class="text-center py-5">
+    لا توجد مقالات حالياً
+  </p>
+
+<?php
+  return;
+}
 
 $chunks = array_chunk($items, 3);
 ?>
@@ -35,8 +41,7 @@ $chunks = array_chunk($items, 3);
               <?php foreach ($chunk as $item): ?>
 
                 <?php
-                  $image = $item['image'] ?? '';
-                  $imageUrl = BASE_URL . ltrim($image, '/');
+                  $imageUrl = BASE_URL . ltrim($item['image'] ?? '', '/');
                 ?>
 
                 <div class="col-lg-4 col-md-6 col-sm-12">
@@ -62,7 +67,7 @@ $chunks = array_chunk($items, 3);
                         <?= e($item['excerpt'] ?? '') ?>
                       </p>
 
-                      <a href="<?= BASE_URL ?>guide/<?= e($item['id']) ?>"
+                      <a href="<?= BASE_URL ?>guide/<?= (int)$item['id'] ?>"
                          class="btn-link mt-auto fw-bold text-decoration-none">
 
                         قراءة المزيد
@@ -89,7 +94,7 @@ $chunks = array_chunk($items, 3);
 
       </div>
 
-      <!-- Dots (IMPORTANT FIX) -->
+      <!-- Dots -->
       <?php if (count($chunks) > 1): ?>
         <div class="dots mt-4 text-center" role="tablist">
 
@@ -97,7 +102,7 @@ $chunks = array_chunk($items, 3);
 
             <span class="dot <?= $i === 0 ? 'active' : '' ?>"
                   data-bs-target="#carousel-guide"
-                  data-bs-slide-to="<?= $i ?>"
+                  data-bs-slide-to="<?= (int)$i ?>"
                   role="tab"
                   aria-label="Slide <?= $i + 1 ?>">
             </span>

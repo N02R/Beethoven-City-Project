@@ -2,11 +2,11 @@
 /** @var array $servicesData */
 ?>
 
-<section class="services py-5" aria-label="<?= $servicesData['title'] ?? 'services' ?>">
+<section class="services py-5" aria-label="<?= e($servicesData['title'] ?? 'services') ?>">
   <div class="custom-container">
 
     <h2 class="mb-5 sec-title">
-      <?= $servicesData['title'] ?? 'خدماتنا' ?>
+      <?= e($servicesData['title'] ?? 'خدماتنا') ?>
     </h2>
 
     <div class="row g-4">
@@ -16,20 +16,20 @@
 
           <div class="col-lg-6 col-md-6 col-sm-12">
 
-            <a href="<?= BASE_URL . $item['link'] ?>"
+            <a href="<?= e(BASE_URL . $item['link']) ?>"
                class="card-link text-decoration-none"
-               aria-label="<?= $item['alt'] ?>">
+               aria-label="<?= e($item['alt'] ?? '') ?>">
 
               <div class="card">
 
-                <img src="<?= BASE_URL . $item['image'] ?>"
-                     alt="<?= $item['alt'] ?>"
+                <img src="<?= e(BASE_URL . $item['image']) ?>"
+                     alt="<?= e($item['alt'] ?? '') ?>"
                      width="600" height="400"
                      loading="lazy"
                      class="card-bg-img">
 
                 <div class="card-info">
-                  <h3><?= $item['title'] ?></h3>
+                  <h3><?= e($item['title'] ?? '') ?></h3>
 
                   <img src="<?= BASE_URL ?>assets/img/home/Arrow.svg"
                        alt=""
