@@ -3,39 +3,18 @@
 $sectionsPath = "pages/includes/sections-home/";
 
 /**
- * ============================
- * SAFE DEFAULTS (View Only)
- * ============================
+ * بيانات الصفحة (View Only)
  */
+$hero = $pageData['hero'] ?? [];
 
-$hero = $hero ?? [];
-
-$servicesData = $services ?? [
-    'title' => '',
-    'items' => []
-];
-
-$chooseData = $choose ?? [
-    'title' => '',
-    'items' => []
-];
-
-$reviewsData = [
-    'title' => $reviews['title'] ?? 'شاهد ماذا يقول عملاؤنا عنا',
-    'videos' => $reviews['videos'] ?? []
-];
-
-$guideData = $guide ?? [
-    'title' => '',
-    'items' => []
-];
+$servicesData = $pageData['services']['items'] ?? [];
+$chooseData   = $pageData['choose']['items'] ?? [];
+$reviewsData  = $pageData['reviews'] ?? [];
+$guideData    = $pageData['guide']['items'] ?? [];
 
 /**
- * ============================
- * SECTIONS RENDER
- * ============================
+ * Sections
  */
-
 include $sectionsPath . "hero.php";
 include $sectionsPath . "services.php";
 include $sectionsPath . "choose.php";

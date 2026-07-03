@@ -3,7 +3,6 @@
 header('Content-Type: text/html; charset=utf-8');
 
 require_once __DIR__ . "/includes/bootstrap.php";
-require_once __DIR__ . "/app/Services/HomeService.php";
 
 /**
  * ============================
@@ -19,7 +18,7 @@ if ($conn->connect_error) {
 
 /**
  * ============================
- * PAGE
+ * ROUTING
  * ============================
  */
 $page = $_GET['page'] ?? 'home';
@@ -36,59 +35,25 @@ $footer_data = content('footer');
 $config = require __DIR__ . "/config.php";
 $page_config = $config['pages'][$page] ?? $config['pages']['404'];
 
+$lang = $_SESSION['lang'] ?? 'ar';
+
 /**
  * ============================
- * HOME DATA
+ * LOAD CONTROLLER
  * ============================
  */
-$hero = [];
-$services = [];
-$choose = [];
-$reviews = [];
-$guide = [];
+$pageData = [];
 
 if ($page === 'home') {
 
-    $lang = $_SESSION['lang'] ?? 'ar';
+    require_once __DIR__ . "/app/Controllers/HomeController.php";
 
-    /**
-     * HERO
-     */
-    $hero = HomeService::getHero($conn, $lang);
-
-    /**
-     * SERVICES (Unified Contract)
-     */
-    $services = [
-        'title' => 'خدماتنا',
-        'items' => HomeService::getServices($conn, $lang)
-    ];
-
-    /**
-     * CHOOSE (Unified Contract)
-     */
-    $choose = [
-        'title' => 'ما الذي يميز بيتهوفن سيتي',
-        'items' => HomeService::getChoose($conn, $lang)
-    ];
-
-    /**
-     * REVIEWS (SPECIAL STRUCTURE - videos)
-     */
-    $reviews = HomeService::getReviews($conn, $lang);
-
-    /**
-     * GUIDE (Unified Contract)
-     */
-    $guide = [
-        'title' => 'دليل بيتهوفن',
-        'items' => HomeService::getGuide($conn, $lang)
-    ];
+    $pageData = HomeController::index($conn, $lang);
 }
 
 /**
  * ============================
- * LOAD PAGE FILE
+ * LOAD VIEW
  * ============================
  */
 $filePath = __DIR__ . "/pages/{$page}.php";
@@ -96,14 +61,8 @@ $filePath = __DIR__ . "/pages/{$page}.php";
 if (!file_exists($filePath)) {
     $filePath = __DIR__ . "/pages/404.php";
     http_response_code(404);
-    $page = '404';
 }
 
-/**
- * ============================
- * RENDER
- * ============================
- */
 ob_start();
 include $filePath;
 $content = ob_get_clean();

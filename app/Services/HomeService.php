@@ -3,9 +3,7 @@
 class HomeService
 {
     /**
-     * ============================
      * HERO
-     * ============================
      */
     public static function getHero($conn, $lang)
     {
@@ -22,9 +20,7 @@ class HomeService
     }
 
     /**
-     * ============================
      * SERVICES
-     * ============================
      */
     public static function getServices($conn, $lang)
     {
@@ -41,7 +37,6 @@ class HomeService
         $result = $stmt->get_result();
 
         $items = [];
-
         while ($row = $result->fetch_assoc()) {
             $items[] = $row;
         }
@@ -50,9 +45,7 @@ class HomeService
     }
 
     /**
-     * ============================
      * CHOOSE
-     * ============================
      */
     public static function getChoose($conn, $lang)
     {
@@ -69,7 +62,6 @@ class HomeService
         $result = $stmt->get_result();
 
         $items = [];
-
         while ($row = $result->fetch_assoc()) {
             $items[] = $row;
         }
@@ -78,9 +70,7 @@ class HomeService
     }
 
     /**
-     * ============================
      * REVIEWS
-     * ============================
      */
     public static function getReviews($conn, $lang)
     {
@@ -97,7 +87,6 @@ class HomeService
         $result = $stmt->get_result();
 
         $videos = [];
-
         while ($row = $result->fetch_assoc()) {
             $videos[] = $row;
         }
@@ -109,9 +98,7 @@ class HomeService
     }
 
     /**
-     * ============================
      * GUIDE
-     * ============================
      */
     public static function getGuide($conn, $lang)
     {
@@ -128,7 +115,6 @@ class HomeService
         $result = $stmt->get_result();
 
         $items = [];
-
         while ($row = $result->fetch_assoc()) {
             $items[] = $row;
         }
