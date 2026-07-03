@@ -6,18 +6,18 @@ $sectionsPath = "pages/includes/sections-home/";
  * ضمان عدم كسر الـ views
  */
 
-// Hero (كما هو)
 $hero = $hero ?? [];
 
 /**
- * مهم: لا نغلف البيانات
- * لأن الـ services.php و choose.php يتوقعون arrays مباشرة
+ * 🔥 توحيد أسماء البيانات (مهم جداً)
  */
-
 $servicesData = $services ?? [];
-$chooseData   = $choose ?? [];
-$reviewsData  = $reviews ?? [];
-$guideData    = $guide ?? [];
+
+$chooseData = $choose ?? [];
+
+$reviewsData = $reviews ?? [];
+
+$guideData = $guide ?? [];
 
 /**
  * sections render
