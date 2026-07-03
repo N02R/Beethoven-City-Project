@@ -78,5 +78,3 @@ define('IS_ADMIN',
     $_SESSION['admin_logged_in'] === true
 );
 
-var_dump($_SESSION);
-exit;
