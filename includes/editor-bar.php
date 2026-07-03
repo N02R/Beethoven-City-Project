@@ -13,9 +13,9 @@
             ✏️ Edit Mode
         </button>
 
-        <button onclick="alert('Saved!')" class="cms-btn save">
-            💾 Save
-        </button>
+<button onclick="saveChanges()" class="cms-btn save">
+    💾 Save
+</button>
 
     </div>
 
@@ -56,5 +56,49 @@ body{
     padding-top: 55px;
 }
 </style>
+
+<?php endif; ?>
+
+<?php if (IS_ADMIN): ?>
+
+<script>
+
+let changes = {};
+
+// التقاط التعديلات من العناصر editable
+document.querySelectorAll('.editable').forEach(el => {
+
+    el.addEventListener('input', function () {
+        const field = this.dataset.field;
+        changes[field] = this.innerText;
+    });
+
+});
+
+// إرسال البيانات للسيرفر
+function saveChanges() {
+
+    fetch('<?= BASE_URL ?>admin/editor/hero_live_update.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(changes)
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if (data.status === 'success') {
+            alert('Saved ✔');
+        } else {
+            alert('Error: ' + data.message);
+        }
+
+        console.log(data);
+    });
+
+}
+
+</script>
 
 <?php endif; ?>
