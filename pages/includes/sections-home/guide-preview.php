@@ -9,20 +9,21 @@ if (!is_array($items) || empty($items)) {
 }
 
 $title = $guideData['title'] ?? 'الدليل';
+
+$chunks = array_chunk($items, 3);
 ?>
 
 <section class="guide py-2" aria-label="<?= e($title) ?>">
   <div class="custom-container">
 
-    <h2 class="mb-2 pt-5 sec-title"><?= e($title) ?></h2>
+    <h2 class="mb-2 pt-5 sec-title">
+      <?= e($title) ?>
+    </h2>
 
-    <?php if (!empty($guideData['desc'] ?? null)): ?>
-      <p class="main-p"><?= e($guideData['desc']) ?></p>
-    <?php endif; ?>
-
-    <?php $chunks = array_chunk($items, 3); ?>
-
-    <div id="carousel-guide" class="carousel slide" data-bs-ride="carousel" data-bs-interval="6000">
+    <div id="carousel-guide"
+         class="carousel slide"
+         data-bs-ride="carousel"
+         data-bs-interval="6000">
 
       <div class="carousel-inner">
 
@@ -87,6 +88,24 @@ $title = $guideData['title'] ?? 'الدليل';
         <?php endforeach; ?>
 
       </div>
+
+      <!-- Dots (IMPORTANT FIX) -->
+      <?php if (count($chunks) > 1): ?>
+        <div class="dots mt-4 text-center" role="tablist">
+
+          <?php foreach ($chunks as $i => $chunk): ?>
+
+            <span class="dot <?= $i === 0 ? 'active' : '' ?>"
+                  data-bs-target="#carousel-guide"
+                  data-bs-slide-to="<?= $i ?>"
+                  role="tab"
+                  aria-label="Slide <?= $i + 1 ?>">
+            </span>
+
+          <?php endforeach; ?>
+
+        </div>
+      <?php endif; ?>
 
     </div>
 
