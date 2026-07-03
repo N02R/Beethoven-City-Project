@@ -12,7 +12,12 @@
     <div class="row g-3">
 
       <?php if (!empty($chooseData['items']) && is_array($chooseData['items'])): ?>
+
         <?php foreach ($chooseData['items'] as $item): ?>
+
+          <?php
+            $image = BASE_URL . ltrim($item['image'] ?? '', '/');
+          ?>
 
           <div class="col-xxl-3 col-lg-3 col-md-6 col-sm-6 col-12">
 
@@ -20,9 +25,10 @@
 
               <div class="card-body">
 
-                <img src="<?= e(BASE_URL . $item['image']) ?>"
+                <img src="<?= e($image) ?>"
                      alt="<?= e($item['alt'] ?? '') ?>"
-                     width="60" height="60"
+                     width="60"
+                     height="60"
                      loading="lazy">
 
                 <h5 class="card-title">
@@ -40,6 +46,7 @@
           </div>
 
         <?php endforeach; ?>
+
       <?php else: ?>
 
         <p class="text-center w-100">

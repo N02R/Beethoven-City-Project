@@ -17,6 +17,7 @@ $items = $faq['items'] ?? [];
     <div class="accordion mb-5" id="accordionFAQ">
 
       <?php if (!empty($items) && is_array($items)): ?>
+
         <?php foreach ($items as $index => $item): ?>
 
           <?php
@@ -25,18 +26,20 @@ $items = $faq['items'] ?? [];
             $collapseId = "collapse" . $id;
 
             $question = $item['question'] ?? '';
-            $answer = $item['answer'] ?? '';
+            $answer   = $item['answer'] ?? '';
           ?>
 
           <div class="accordion-item">
+
             <h3 class="accordion-header" id="<?= $headingId ?>">
 
-              <button class="accordion-button <?= $index === 0 ? '' : 'collapsed' ?>" 
-                      type="button" 
-                      data-bs-toggle="collapse" 
-                      data-bs-target="#<?= $collapseId ?>" 
-                      aria-expanded="<?= $index === 0 ? 'true' : 'false' ?>" 
-                      aria-controls="<?= $collapseId ?>">
+              <button 
+                class="accordion-button <?= $index === 0 ? '' : 'collapsed' ?>" 
+                type="button" 
+                data-bs-toggle="collapse" 
+                data-bs-target="#<?= $collapseId ?>" 
+                aria-expanded="<?= $index === 0 ? 'true' : 'false' ?>" 
+                aria-controls="<?= $collapseId ?>">
 
                 <?= e($question) ?>
 
@@ -44,19 +47,22 @@ $items = $faq['items'] ?? [];
 
             </h3>
 
-            <div id="<?= $collapseId ?>" 
-                 class="accordion-collapse collapse <?= $index === 0 ? 'show' : '' ?>" 
-                 aria-labelledby="<?= $headingId ?>" 
-                 data-bs-parent="#accordionFAQ">
+            <div 
+              id="<?= $collapseId ?>" 
+              class="accordion-collapse collapse <?= $index === 0 ? 'show' : '' ?>" 
+              aria-labelledby="<?= $headingId ?>" 
+              data-bs-parent="#accordionFAQ">
 
               <div class="accordion-body">
                 <?= nl2br(e($answer)) ?>
               </div>
 
             </div>
+
           </div>
 
         <?php endforeach; ?>
+
       <?php else: ?>
 
         <p class="text-center">
@@ -68,5 +74,6 @@ $items = $faq['items'] ?? [];
       <?php endif; ?>
 
     </div>
+
   </div>
 </section>

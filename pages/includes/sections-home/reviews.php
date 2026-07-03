@@ -4,22 +4,11 @@
  */
 
 $videos = $reviews['videos'] ?? [];
-
-$title = $reviews['title'] ?? 'آراء عملاء بيتهوفن سيتي';
-
-if (!is_array($videos) || empty($videos)) {
-?>
-
-  <p class="text-center py-5">
-    لا توجد فيديوهات حالياً
-  </p>
-
-<?php
-  return;
-}
+$title   = $reviews['title'] ?? 'آراء عملاء بيتهوفن سيتي';
 ?>
 
 <section class="reviews py-5" aria-label="<?= e($title) ?>">
+
   <div class="reviews-bg">
     <div class="custom-container">
 
@@ -33,52 +22,71 @@ if (!is_array($videos) || empty($videos)) {
   <div class="custom-container">
     <div class="reviews-carousel-wrapper">
 
-      <div id="carousel-reviews" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+      <?php if (!empty($videos) && is_array($videos)): ?>
 
-        <div class="carousel-inner">
+        <div id="carousel-reviews"
+             class="carousel slide"
+             data-bs-ride="carousel"
+             data-bs-interval="5000">
 
-          <?php foreach ($videos as $index => $video): ?>
+          <div class="carousel-inner">
 
-            <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
+            <?php foreach ($videos as $index => $video): ?>
 
-              <div class="video-wrapper">
-                <div class="video-container">
+              <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
 
-                  <iframe
-                    src="<?= e($video['url'] ?? '') ?>"
-                    title="<?= e($video['title'] ?? '') ?>"
-                    allowfullscreen
-                    loading="lazy"
-                    style="border: 0;">
-                  </iframe>
+                <div class="video-wrapper">
+                  <div class="video-container">
 
+                    <iframe
+                      src="<?= e($video['url'] ?? '') ?>"
+                      title="<?= e($video['title'] ?? '') ?>"
+                      allowfullscreen
+                      loading="lazy"
+                      style="border: 0;">
+                    </iframe>
+
+                  </div>
                 </div>
+
               </div>
+
+            <?php endforeach; ?>
+
+          </div>
+
+          <!-- DOTS -->
+          <?php if (count($videos) > 1): ?>
+
+            <div class="dots mt-4" role="tablist">
+
+              <?php foreach ($videos as $index => $video): ?>
+
+                <button
+                  type="button"
+                  class="dot <?= $index === 0 ? 'active' : '' ?>"
+                  data-bs-target="#carousel-reviews"
+                  data-bs-slide-to="<?= (int)$index ?>"
+                  aria-label="عرض فيديو رقم <?= $index + 1 ?>">
+                </button>
+
+              <?php endforeach; ?>
 
             </div>
 
-          <?php endforeach; ?>
+          <?php endif; ?>
 
         </div>
 
-        <!-- Dots -->
-        <div class="dots mt-4" role="tablist">
+      <?php else: ?>
 
-          <?php foreach ($videos as $index => $video): ?>
+        <p class="text-center py-5">
+          لا توجد فيديوهات حالياً
+        </p>
 
-            <span class="dot <?= $index === 0 ? 'active' : '' ?>"
-                  data-bs-target="#carousel-reviews"
-                  data-bs-slide-to="<?= (int)$index ?>"
-                  role="tab"
-                  aria-label="عرض فيديو رقم <?= $index + 1 ?>">
-            </span>
-
-          <?php endforeach; ?>
-
-        </div>
-
-      </div>
+      <?php endif; ?>
 
     </div>
   </div>
+
 </section>

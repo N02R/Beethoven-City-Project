@@ -12,19 +12,26 @@
     <div class="row g-4">
 
       <?php if (!empty($servicesData['items']) && is_array($servicesData['items'])): ?>
+
         <?php foreach ($servicesData['items'] as $item): ?>
+
+          <?php
+            $link  = BASE_URL . ltrim($item['link'] ?? '', '/');
+            $image = BASE_URL . ltrim($item['image'] ?? '', '/');
+          ?>
 
           <div class="col-lg-6 col-md-6 col-sm-12">
 
-            <a href="<?= e(BASE_URL . $item['link']) ?>"
+            <a href="<?= e($link) ?>"
                class="card-link text-decoration-none"
                aria-label="<?= e($item['alt'] ?? '') ?>">
 
               <div class="card">
 
-                <img src="<?= e(BASE_URL . $item['image']) ?>"
+                <img src="<?= e($image) ?>"
                      alt="<?= e($item['alt'] ?? '') ?>"
-                     width="600" height="400"
+                     width="600"
+                     height="400"
                      loading="lazy"
                      class="card-bg-img">
 
@@ -44,6 +51,7 @@
           </div>
 
         <?php endforeach; ?>
+
       <?php else: ?>
 
         <p class="text-center">
