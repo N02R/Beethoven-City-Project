@@ -25,6 +25,10 @@ class HomeController
                 'title' => 'دليل بيتهوفن',
                 'items' => HomeService::getGuide($conn, $lang)
             ],
+            'faq' => [
+    'title' => 'الأسئلة الشائعة',
+    'items' => HomeService::getFaq($conn, $lang)
+],
         ];
     }
 }

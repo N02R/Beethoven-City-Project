@@ -121,4 +121,26 @@ class HomeService
 
         return $items;
     }
+    public static function getFaq($conn, $lang)
+{
+    $stmt = $conn->prepare("
+        SELECT question, answer
+        FROM faq
+        WHERE lang = ?
+        ORDER BY id ASC
+    ");
+
+    $stmt->bind_param("s", $lang);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+
+    $items = [];
+
+    while ($row = $result->fetch_assoc()) {
+        $items[] = $row;
+    }
+
+    return $items;
+}
 }
