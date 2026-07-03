@@ -23,7 +23,8 @@ if ($conn->connect_error) {
  */
 $page = $_GET['page'] ?? 'home';
 $page = ucfirst(basename(trim($page)));
-
+var_dump($page);
+var_dump(__DIR__ . "/pages/{$page}.php");
 /**
  * ============================
  * GLOBAL CONTENT
