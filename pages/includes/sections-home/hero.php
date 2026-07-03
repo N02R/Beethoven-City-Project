@@ -77,105 +77,106 @@ if (!isset($hero)) {
 let changes = {};
 
 /**
- * 🟢 EDIT TEXT ELEMENTS ONLY (h1, p)
+ * 🟢 Activate editing properly
  */
 document.querySelectorAll('.editable').forEach(el => {
-
-    el.addEventListener('click', function (e) {
-
+    
+    el.addEventListener('click', function(e) {
+        
         e.stopPropagation();
-
+        
         this.setAttribute('contenteditable', 'true');
         this.focus();
-
+        
     });
-
-    el.addEventListener('blur', function () {
-
-        this.removeAttribute('contenteditable');
-
+    
+    el.addEventListener('input', function() {
+        
         const field = this.dataset.field;
         const value = this.innerText.trim();
-
+        
         changes[field] = value;
-
-        console.log("Updated:", changes);
-
+        
+        console.log("Typing:", changes);
+        
     });
-
+    
+    el.addEventListener('blur', function() {
+        
+        this.removeAttribute('contenteditable');
+    });
+    
 });
 
 
 /**
- * 🟡 EDIT BUTTON TEXT (special handling)
+ * 🟡 BUTTON FIX (CRITICAL FIX)
  */
 document.querySelectorAll('.editable-text').forEach(el => {
-
-    el.addEventListener('click', function (e) {
-
-        e.preventDefault(); // مهم حتى لا ينتقل الرابط
-
+    
+    el.addEventListener('click', function(e) {
+        
+        e.preventDefault();
+        e.stopPropagation();
+        
         let span = this.querySelector('span');
-
-        if (!span) return;
-
+        
         span.setAttribute('contenteditable', 'true');
         span.focus();
-
+        
     });
-
-    el.addEventListener('blur', function () {
-
-        let span = this.querySelector('span');
-
-        if (!span) return;
-
-        span.removeAttribute('contenteditable');
-
-        const field = this.dataset.field;
-        const value = span.innerText.trim();
-
+    
+    span = null;
+    
+    el.querySelector('span').addEventListener('input', function() {
+        
+        const field = this.closest('a').dataset.field;
+        const value = this.innerText.trim();
+        
         changes[field] = value;
-
-        console.log("Button Updated:", changes);
-
+        
+        console.log("Button typing:", changes);
+        
     });
-
+    
+    el.querySelector('span').addEventListener('blur', function() {
+        this.removeAttribute('contenteditable');
+    });
+    
 });
 
 
 /**
- * 💾 SAVE TO DATABASE
+ * 💾 SAVE FUNCTION (UNCHANGED BUT SAFE)
  */
 function saveHero() {
-
+    
     if (Object.keys(changes).length === 0) {
         alert("No changes to save");
         return;
     }
-
+    
     fetch('<?= BASE_URL ?>admin/editor/hero_live_update.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(changes)
-    })
-    .then(res => res.json())
-    .then(data => {
-
-        if (data.status === 'success') {
-            alert('Saved ✔');
-            location.reload();
-        } else {
-            alert('Error: ' + data.message);
-        }
-
-        console.log(data);
-
-    });
-
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(changes)
+        })
+        .then(res => res.json())
+        .then(data => {
+            
+            if (data.status === 'success') {
+                alert('Saved ✔');
+                location.reload();
+            } else {
+                alert('Error: ' + data.message);
+            }
+            
+            console.log(data);
+            
+        });
+    
 }
-
 </script>
-<?php endif; ?>
+<?php endif; ?> 
