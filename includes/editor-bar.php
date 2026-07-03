@@ -16,6 +16,9 @@
 <button onclick="saveChanges()" class="cms-btn save">
     💾 Save
 </button>
+<a href="<?= BASE_URL ?>admin/logout.php" class="cms-btn logout">
+    🚪 Logout
+</a>
 
     </div>
 
