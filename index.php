@@ -23,27 +23,25 @@ if ($conn->connect_error) {
  */
 $page = $_GET['page'] ?? 'home';
 $page = strtolower(trim($page));
-var_dump($page);
-var_dump(__DIR__ . "/pages/{$page}.php");
+
 /**
  * ============================
- * GLOBAL CONTENT
+ * GLOBAL DATA (NAV / FOOTER / ETC)
  * ============================
  */
 require_once __DIR__ . "/app/Services/GlobalService.php";
 
-$globalData = GlobalService::getGlobalData(strtolower($page));
-extract($globalData);
+$globalData = GlobalService::getGlobalData($page);
 
 /**
  * ============================
- * CONTROLLER LOADER (AUTO)
+ * CONTROLLER LOADER (AUTO MVC)
  * ============================
  */
 $lang = $_SESSION['lang'] ?? 'ar';
 
-$controllerClass = $page . 'Controller';
-$controllerFile = __DIR__ . "/app/Controllers/{$controllerClass}.php";
+$controllerClass = ucfirst($page) . 'Controller';
+$controllerFile  = __DIR__ . "/app/Controllers/{$controllerClass}.php";
 
 $data = [];
 
@@ -57,36 +55,49 @@ if (file_exists($controllerFile)) {
 
 } else {
 
+    // fallback to error controller
     http_response_code(404);
 
     require_once __DIR__ . "/app/Controllers/ErrorController.php";
 
-    $data = ErrorController::index($conn, $lang);
+    if (class_exists('ErrorController')) {
+        $data = ErrorController::index($conn, $lang);
+    }
 }
 
 /**
  * ============================
- * VIEW DATA
+ * MERGE DATA
  * ============================
+ * global + page data
  */
-extract($data);
+$pageData = array_merge($globalData, $data);
 
 /**
  * ============================
- * LOAD VIEW
+ * PASS DATA TO VIEW
+ * ============================
+ */
+extract($pageData);
+
+/**
+ * ============================
+ * LOAD VIEW FILE
  * ============================
  */
 $filePath = __DIR__ . "/pages/{$page}.php";
 
 if (!file_exists($filePath)) {
-    $filePath = __DIR__ . "/pages/404.php";
+
     http_response_code(404);
+
+    $filePath = __DIR__ . "/pages/404.php";
     $page = '404';
 }
 
 /**
  * ============================
- * RENDER
+ * RENDER OUTPUT
  * ============================
  */
 ob_start();

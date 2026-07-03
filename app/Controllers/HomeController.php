@@ -7,28 +7,59 @@ class HomeController
     public static function index($conn, $lang)
     {
         return [
+            /**
+             * ============================
+             * HERO
+             * ============================
+             */
             'hero' => HomeService::getHero($conn, $lang),
 
-            'servicesData' => [
+            /**
+             * ============================
+             * SERVICES
+             * ============================
+             */
+            'services' => [
                 'title' => 'خدماتنا',
                 'items' => HomeService::getServices($conn, $lang)
             ],
 
-            'chooseData' => [
+            /**
+             * ============================
+             * CHOOSE
+             * ============================
+             */
+            'choose' => [
                 'title' => 'ما الذي يميز بيتهوفن سيتي',
                 'items' => HomeService::getChoose($conn, $lang)
             ],
 
-            'reviewsData' => HomeService::getReviews($conn, $lang),
+            /**
+             * ============================
+             * REVIEWS
+             * ============================
+             */
+            'reviews' => HomeService::getReviews($conn, $lang),
 
-            'guideData' => [
+            /**
+             * ============================
+             * GUIDE
+             * ============================
+             */
+            'guide' => [
                 'title' => 'دليل بيتهوفن',
                 'items' => HomeService::getGuide($conn, $lang)
             ],
+
+            /**
+             * ============================
+             * FAQ
+             * ============================
+             */
             'faq' => [
-    'title' => 'الأسئلة الشائعة',
-    'items' => HomeService::getFaq($conn, $lang)
-],
+                'title' => 'الأسئلة الشائعة',
+                'items' => HomeService::getFaq($conn, $lang)
+            ],
         ];
     }
 }
