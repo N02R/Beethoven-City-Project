@@ -57,7 +57,7 @@ if ($page === 'home') {
     $hero = HomeService::getHero($conn, $lang);
 
     /**
-     * SERVICES (Data Contract Standardized)
+     * SERVICES (Unified Contract)
      */
     $services = [
         'title' => 'خدماتنا',
@@ -65,22 +65,25 @@ if ($page === 'home') {
     ];
 
     /**
-     * CHOOSE (سيتم توحيده في الخطوة التالية)
+     * CHOOSE (Unified Contract)
      */
     $choose = [
-    'title' => 'ما الذي يميز بيتهوفن سيتي',
-    'items' => HomeService::getChoose($conn, $lang)
-];
+        'title' => 'ما الذي يميز بيتهوفن سيتي',
+        'items' => HomeService::getChoose($conn, $lang)
+    ];
 
     /**
-     * REVIEWS
+     * REVIEWS (SPECIAL STRUCTURE - videos)
      */
     $reviews = HomeService::getReviews($conn, $lang);
 
     /**
-     * GUIDE
+     * GUIDE (Unified Contract)
      */
-    $guide = HomeService::getGuide($conn, $lang);
+    $guide = [
+        'title' => 'دليل بيتهوفن',
+        'items' => HomeService::getGuide($conn, $lang)
+    ];
 }
 
 /**

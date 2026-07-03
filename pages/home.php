@@ -3,24 +3,37 @@
 $sectionsPath = "pages/includes/sections-home/";
 
 /**
- * ضمان عدم كسر الـ views
+ * ============================
+ * SAFE DEFAULTS (View Only)
+ * ============================
  */
 
 $hero = $hero ?? [];
 
+$servicesData = $services ?? [
+    'title' => '',
+    'items' => []
+];
+
+$chooseData = $choose ?? [
+    'title' => '',
+    'items' => []
+];
+
+$reviewsData = $reviews ?? [
+    'title' => '',
+    'videos' => []
+];
+
+$guideData = $guide ?? [
+    'title' => '',
+    'items' => []
+];
+
 /**
- * 🔥 توحيد أسماء البيانات (مهم جداً)
- */
-$servicesData = $services ?? [];
-
-$chooseData = $choose ?? [];
-
-$reviewsData = $reviews ?? [];
-
-$guideData = $guide ?? [];
-
-/**
- * sections render
+ * ============================
+ * SECTIONS RENDER
+ * ============================
  */
 
 include $sectionsPath . "hero.php";
@@ -28,4 +41,3 @@ include $sectionsPath . "services.php";
 include $sectionsPath . "choose.php";
 include $sectionsPath . "reviews.php";
 include $sectionsPath . "guide-preview.php";
-?>
