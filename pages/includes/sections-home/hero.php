@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../../admin/includes/bootstrap.php';
 $stmt = $pdo->prepare("SELECT * FROM pages WHERE slug = 'home_hero' LIMIT 1");
 $stmt->execute();
 $hero = $stmt->fetch(PDO::FETCH_ASSOC);
