@@ -8,9 +8,9 @@ $hero = $stmt->fetch(PDO::FETCH_ASSOC);
 
 <section class="hero py-5">
 
-  <div class="hero-container custom-container">
-
-    <div class="hero-content">
+  <div class="custom-container">
+      <div class="hero-container">
+ <div class="hero-content">
 
         <h1>
             <?= htmlspecialchars($hero['title_text'] ?? 'مرحباً بك في موقعنا') ?>
@@ -25,7 +25,7 @@ $hero = $stmt->fetch(PDO::FETCH_ASSOC);
         </a>
 
     </div>
-
+</div>
   </div>
 
 </section>
