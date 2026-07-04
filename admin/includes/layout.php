@@ -18,26 +18,50 @@ if (!isset($content)) {
 <div style="display:flex; min-height:100vh; font-family:Neo Sans Arabic, sans-serif;">
 
     <!-- 🟦 SIDEBAR -->
-    <aside style="
-        width:250px;
-        background:#0f172a;
-        color:#fff;
-        padding:20px;
-    ">
+    <!-- 🟦 SIDEBAR -->
+<aside style="
+    width:260px;
+    background:#0f172a;
+    color:#fff;
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+">
 
-        <h2 style="color:#1e63ff;">BCS CMS</h2>
+    <h2 style="color:#1e63ff; margin-bottom:20px;">BCS CMS</h2>
 
-        <nav style="margin-top:30px; display:flex; flex-direction:column; gap:12px;">
+    <?php
+    $active = $_SERVER['REQUEST_URI'];
+    ?>
 
-            <a href="/admin/dashboard/index.php" style="color:white; text-decoration:none;">Dashboard</a>
-            <a href="#" style="color:white; text-decoration:none;">Pages</a>
-            <a href="#" style="color:white; text-decoration:none;">Media</a>
-            <a href="#" style="color:white; text-decoration:none;">Users</a>
-            <a href="#" style="color:white; text-decoration:none;">Settings</a>
+<a href="/admin/dashboard/index.php"
+   style="color:white; text-decoration:none; padding:10px; border-radius:8px; display:block;
+   background: <?= strpos($_SERVER['REQUEST_URI'], 'dashboard') !== false ? '#1e63ff' : 'transparent' ?>;">
+    📊 Dashboard
+</a>
 
-        </nav>
+    <a href="#"
+       style="color:white; text-decoration:none; padding:10px; border-radius:8px;">
+        📄 Pages
+    </a>
 
-    </aside>
+    <a href="#"
+       style="color:white; text-decoration:none; padding:10px; border-radius:8px;">
+        🖼 Media
+    </a>
+
+    <a href="#"
+       style="color:white; text-decoration:none; padding:10px; border-radius:8px;">
+        👤 Users
+    </a>
+
+    <a href="#"
+       style="color:white; text-decoration:none; padding:10px; border-radius:8px;">
+        ⚙ Settings
+    </a>
+
+</aside>
 
     <!-- 🟦 MAIN -->
     <main style="flex:1; background:#f5f7fb; padding:20px;">
