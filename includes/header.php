@@ -1,3 +1,8 @@
+<?php if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in']): ?>
+    <div id="cms-status" style="position:fixed;top:10px;right:10px;background:#000;color:#fff;padding:5px 10px;z-index:99999;">
+        ADMIN MODE
+    </div>
+<?php endif; ?>
 <?php 
 /** 
  * @var array $config 
@@ -66,3 +71,10 @@ $lang = $_SESSION['lang'] ?? 'ar';
 <div id="loader-wrapper" role="status" aria-live="polite">
     <div class="loader"></div>
 </div>
+
+<?php if ($_SESSION['admin_logged_in'] ?? false): ?>
+<button id="toggleEdit"
+        style="position:fixed;bottom:20px;left:20px;z-index:99999;">
+    Toggle Edit Mode
+</button>
+<?php endif; ?>

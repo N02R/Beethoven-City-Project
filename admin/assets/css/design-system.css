@@ -1,0 +1,56 @@
+/* ===================================================
+   Beethoven CMS Studio
+   Design System Core
+=================================================== */
+
+:root {
+  
+  /* 🎨 Colors */
+  --primary: #1e63ff;
+  --primary-dark: #174acc;
+  
+  --bg: #f5f7fb;
+  --white: #ffffff;
+  
+  --text: #1f2937;
+  --muted: #6b7280;
+  
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  
+  /* 📐 Radius */
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  
+  /* ☁ Shadow */
+  --shadow-sm: 0 4px 10px rgba(0, 0, 0, .05);
+  --shadow-md: 0 10px 30px rgba(0, 0, 0, .08);
+  
+  /* 📏 Spacing */
+  --sp-1: 8px;
+  --sp-2: 16px;
+  --sp-3: 24px;
+  --sp-4: 32px;
+  --sp-5: 48px;
+  
+  /* 🔤 Font */
+  --font-main: "Neo Sans Arabic", sans-serif;
+}
+
+/* =========================
+   Global Reset
+========================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-main);
+  background: var(--bg);
+  color: var(--text);
+}
