@@ -9,8 +9,8 @@ $hero = $stmt->fetch(PDO::FETCH_ASSOC);
 /* 🟢 صلاحية الأدمن */
 $isAdmin = !empty($_SESSION['admin']);
 
-/* 🟢 حل الصورة الآمن */
-$image = !empty($hero['image'])
+/* 🟢 حل الصورة النهائي (آمن 100%) */
+$imagePath = !empty($hero['image'])
     ? BASE_URL . 'admin/uploads/hero/' . $hero['image']
     : BASE_URL . 'assets/img/default-hero.jpg';
 ?>
@@ -20,21 +20,23 @@ $image = !empty($hero['image'])
   <div class="custom-container">
 
     <div class="hero-container"
-         style="background-image: url('<?= htmlspecialchars($image) ?>');
+         style="background-image: url('<?= htmlspecialchars($imagePath) ?>');
                 background-size: cover;
                 background-position: center;
+                background-repeat: no-repeat;
                 min-height: 500px;
                 position: relative;">
 
-      <!-- 🟣 overlay (للحفاظ على نفس التصميم) -->
+      <!-- 🟣 overlay (ثابت بدون تغيير التصميم) -->
       <div style="
             position:absolute;
             inset:0;
             background:linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.8));
-            z-index:1;">
+            z-index:1;
+            pointer-events:none;">
       </div>
 
-      <!-- 🟢 CONTENT -->
+      <!-- 🟢 CONTENT (بدون أي تغيير في مكانه) -->
       <div class="hero-content" style="position:relative; z-index:2;">
 
         <!-- 🟢 TITLE -->
