@@ -4,21 +4,24 @@ ini_set('display_errors', 1);
 
 session_start();
 
+/* 🟢 Auth check */
 if (!isset($_SESSION['admin_logged_in'])) {
     header("Location: ../login.php");
     exit;
 }
 
+/* 🟢 DB (استخدم PDO فقط لتوحيد النظام) */
 require_once __DIR__ . "/../../includes/bootstrap.php";
 
-$conn = new mysqli("127.0.0.1", "root", "", "cms_dev");
-$conn->set_charset("utf8mb4");
-
-$stmt = $conn->prepare("SELECT * FROM pages WHERE slug = 'home_hero' LIMIT 1");
+/* 🟢 جلب Hero */
+$stmt = $pdo->prepare("SELECT * FROM pages WHERE slug = 'home_hero' LIMIT 1");
 $stmt->execute();
+$hero = $stmt->fetch(PDO::FETCH_ASSOC);
 
-$result = $stmt->get_result();
-$hero = $result ? $result->fetch_assoc() : [];
+/* 🟢 صورة آمنة */
+$image = !empty($hero['image'])
+    ? BASE_URL . 'assets/img/' . $hero['image']
+    : '';
 ?>
 
 <!DOCTYPE html>
@@ -28,7 +31,7 @@ $hero = $result ? $result->fetch_assoc() : [];
     <meta charset="UTF-8">
     <title>Live Hero Editor</title>
 
-    <!-- 🎨 REAL WEBSITE STYLE -->
+    <!-- 🎨 Styles -->
     <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/style.css">
 
@@ -38,12 +41,10 @@ $hero = $result ? $result->fetch_assoc() : [];
             background: #0f172a;
         }
 
-        /* Editor */
         .editor-wrap {
             position: relative;
         }
 
-        /* Editable hover */
         .editable {
             cursor: pointer;
             transition: 0.2s;
@@ -54,7 +55,6 @@ $hero = $result ? $result->fetch_assoc() : [];
             outline-offset: 4px;
         }
 
-        /* Save panel */
         .save-panel {
             position: fixed;
             top: 20px;
@@ -71,9 +71,40 @@ $hero = $result ? $result->fetch_assoc() : [];
             width: 100%;
         }
 
-        .hero-image img {
-            max-width: 100%;
-            border-radius: 10px;
+        .hero-container {
+            position: relative;
+            min-height: 500px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+        }
+
+        .hero-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.8));
+            z-index: 2;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            padding: 120px 20px;
+            color: #fff;
         }
     </style>
 </head>
@@ -85,7 +116,6 @@ $hero = $result ? $result->fetch_assoc() : [];
 
     <h6>Live Hero Editor</h6>
 
-    <!-- IMAGE UPLOAD -->
     <input type="file" id="imageInput" class="form-control form-control-sm mt-2">
 
     <button class="btn btn-success btn-sm mt-3" onclick="saveChanges()">
@@ -98,7 +128,7 @@ $hero = $result ? $result->fetch_assoc() : [];
 
 </div>
 
-<!-- 🟢 HERO (REAL DESIGN) -->
+<!-- 🟢 HERO -->
 <div class="editor-wrap">
 
 <section class="hero py-5">
@@ -107,31 +137,38 @@ $hero = $result ? $result->fetch_assoc() : [];
 
     <div class="hero-container">
 
-      <div class="hero-content">
+        <!-- 🟢 IMAGE -->
+        <?php if (!empty($image)): ?>
+            <div class="hero-bg">
+                <img id="previewImage" src="<?= htmlspecialchars($image) ?>">
+            </div>
+        <?php else: ?>
+            <div class="hero-bg">
+                <img id="previewImage" src="">
+            </div>
+        <?php endif; ?>
 
-        <h1 class="editable" contenteditable="true" data-field="title_text">
-            <?= htmlspecialchars($hero['title_text'] ?? '') ?>
-        </h1>
+        <!-- 🟣 OVERLAY -->
+        <div class="hero-overlay"></div>
 
-        <p class="editable" contenteditable="true" data-field="description">
-            <?= htmlspecialchars($hero['description'] ?? '') ?>
-        </p>
+        <!-- 🟢 CONTENT -->
+        <div class="hero-content">
 
-        <a class="btn btn-primary editable"
-           contenteditable="true"
-           data-field="button_text">
-            <?= htmlspecialchars($hero['button_text'] ?? '') ?>
-        </a>
+            <h1 class="editable" contenteditable="true" data-field="title_text">
+                <?= htmlspecialchars($hero['title_text'] ?? 'عنوان الهيرو') ?>
+            </h1>
 
-      </div>
+            <p class="editable" contenteditable="true" data-field="description">
+                <?= htmlspecialchars($hero['description'] ?? 'وصف الهيرو هنا') ?>
+            </p>
 
-      <?php if (!empty($hero['image'])): ?>
-        <div class="hero-image">
-            <img src="<?= BASE_URL . 'assets/img/' . $hero['image'] ?>"
-                 id="previewImage"
-                 class="img-fluid">
+            <a class="btn btn-primary editable"
+               contenteditable="true"
+               data-field="button_text">
+                <?= htmlspecialchars($hero['button_text'] ?? 'ابدأ الآن') ?>
+            </a>
+
         </div>
-      <?php endif; ?>
 
     </div>
 
@@ -141,48 +178,51 @@ $hero = $result ? $result->fetch_assoc() : [];
 
 </div>
 
-<!-- 🟡 JS ENGINE -->
+<!-- 🟡 JS -->
 <script>
 
 let changes = {};
 let imageFile = null;
 
-/**
- * TEXT EDITS
- */
+/* 🟢 TEXT EDIT */
 document.querySelectorAll('.editable').forEach(el => {
 
     el.addEventListener('input', function () {
+
         let field = this.dataset.field;
+
         if (field) {
-            changes[field] = this.innerText;
+            changes[field] = this.innerText.trim();
         }
+
     });
 
 });
 
-/**
- * IMAGE PREVIEW
- */
+/* 🟢 IMAGE PREVIEW */
 document.getElementById('imageInput').addEventListener('change', function(e) {
 
     imageFile = e.target.files[0];
 
-    if (imageFile) {
+    if (!imageFile) return;
 
-        let reader = new FileReader();
+    let reader = new FileReader();
 
-        reader.onload = function(e) {
-            document.getElementById('previewImage').src = e.target.result;
-        };
+    reader.onload = function(e) {
 
-        reader.readAsDataURL(imageFile);
-    }
+        let img = document.getElementById('previewImage');
+
+        if (img) {
+            img.src = e.target.result;
+        }
+
+    };
+
+    reader.readAsDataURL(imageFile);
+
 });
 
-/**
- * SAVE FUNCTION
- */
+/* 🟢 SAVE */
 function saveChanges() {
 
     let formData = new FormData();
@@ -202,11 +242,11 @@ function saveChanges() {
 
         if (data.status === 'success') {
             alert('Saved ✔');
+            location.reload();
         } else {
             alert('Error: ' + data.message);
         }
 
-        console.log(data);
     });
 
 }
