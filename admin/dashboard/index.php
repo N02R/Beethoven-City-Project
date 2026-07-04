@@ -2,7 +2,7 @@
 session_start();
 
 /* 🟢 1. أول شيء: الاتصال بقاعدة البيانات */
-require_once __DIR__ . '/../../config.php';
+require_once __DIR__ . '/../includes/bootstrap.php';
 
 /* 🟢 2. ثم الهيدر */
 require_once __DIR__ . '/../includes/header.php';

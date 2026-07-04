@@ -2,16 +2,31 @@
 
 /**
  * Beethoven CMS Studio
- * Admin Bootstrap
+ * Admin Bootstrap + DB Connection
  */
 
-// منع الوصول المباشر إذا احتجنا لاحقًا
 defined('CMS_ADMIN') or define('CMS_ADMIN', true);
 
-// بدء الجلسة
+/* 🟢 1. Session */
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// استدعاء إعدادات المشروع
-require_once dirname(__DIR__, 2) . '/config.php';
+/* 🟢 2. Database Connection (PDO) */
+$host = "localhost";
+$db   = "cms_dev";
+$user = "root";
+$pass = "";
+
+try {
+    $pdo = new PDO(
+        "mysql:host=$host;dbname=$db;charset=utf8",
+        $user,
+        $pass
+    );
+
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+} catch (Exception $e) {
+    die("DB Connection Failed: " . $e->getMessage());
+}
