@@ -1,22 +1,31 @@
 <?php
 require_once __DIR__ . '/../../../admin/includes/bootstrap.php';
+
 $stmt = $pdo->prepare("SELECT * FROM pages WHERE slug = 'home_hero' LIMIT 1");
 $stmt->execute();
 $hero = $stmt->fetch(PDO::FETCH_ASSOC);
 ?>
 
-<section class="hero">
+<section class="hero py-5">
 
-    <h1>
-        <?= htmlspecialchars($hero['title_text'] ?? 'Default Title') ?>
-    </h1>
+  <div class="hero-container">
 
-    <p>
-        <?= htmlspecialchars($hero['description'] ?? 'Default Description') ?>
-    </p>
+    <div class="hero-content">
 
-    <a href="<?= htmlspecialchars($hero['button_link'] ?? '#') ?>">
-        <?= htmlspecialchars($hero['button_text'] ?? 'Click Here') ?>
-    </a>
+        <h1>
+            <?= htmlspecialchars($hero['title_text'] ?? 'مرحباً بك في موقعنا') ?>
+        </h1>
+
+        <p>
+            <?= htmlspecialchars($hero['description'] ?? 'نقدم أفضل الخدمات التعليمية والاحترافية') ?>
+        </p>
+
+        <a href="<?= htmlspecialchars($hero['button_link'] ?? '#') ?>" class="btn hero-btn">
+            <?= htmlspecialchars($hero['button_text'] ?? 'ابدأ الآن') ?>
+        </a>
+
+    </div>
+
+  </div>
 
 </section>
