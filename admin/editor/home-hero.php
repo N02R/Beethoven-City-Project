@@ -1,5 +1,4 @@
 <?php
-require_once __DIR__ . '/../includes/bootstrap.php';
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -11,7 +10,7 @@ if (!isset($_SESSION['admin_logged_in'])) {
     exit;
 }
 
-/* 🟢 DB (استخدم PDO فقط لتوحيد النظام) */
+/* 🟢 Bootstrap (مرة واحدة فقط) */
 require_once __DIR__ . "/../../includes/bootstrap.php";
 
 /* 🟢 جلب Hero */
@@ -19,10 +18,10 @@ $stmt = $pdo->prepare("SELECT * FROM pages WHERE slug = 'home_hero' LIMIT 1");
 $stmt->execute();
 $hero = $stmt->fetch(PDO::FETCH_ASSOC);
 
-/* 🟢 صورة آمنة */
+/* 🟢 صورة آمنة (المسار الصحيح) */
 $image = !empty($hero['image'])
-    ? BASE_URL . 'assets/img/' . $hero['image']
-    : '';
+    ? BASE_URL . 'admin/uploads/hero/' . $hero['image']
+    : BASE_URL . 'assets/img/default-hero.jpg';
 ?>
 
 <!DOCTYPE html>
@@ -32,7 +31,6 @@ $image = !empty($hero['image'])
     <meta charset="UTF-8">
     <title>Live Hero Editor</title>
 
-    <!-- 🎨 Styles -->
     <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/style.css">
 
@@ -80,8 +78,6 @@ $image = !empty($hero['image'])
         }
 
         .hero-bg {
-            width: 100%;
-            height: 100%;
             position: absolute;
             inset: 0;
             z-index: 1;
@@ -126,7 +122,6 @@ $image = !empty($hero['image'])
     <p style="font-size:12px; margin-top:10px;">
         ✏️ Click text to edit
     </p>
-
 </div>
 
 <!-- 🟢 HERO -->
@@ -139,15 +134,9 @@ $image = !empty($hero['image'])
     <div class="hero-container">
 
         <!-- 🟢 IMAGE -->
-        <?php if (!empty($image)): ?>
-            <div class="hero-bg">
-                <img id="previewImage" src="<?= htmlspecialchars($image) ?>">
-            </div>
-        <?php else: ?>
-            <div class="hero-bg">
-                <img id="previewImage" src="">
-            </div>
-        <?php endif; ?>
+        <div class="hero-bg">
+            <img id="previewImage" src="<?= htmlspecialchars($image) ?>">
+        </div>
 
         <!-- 🟣 OVERLAY -->
         <div class="hero-overlay"></div>
@@ -187,17 +176,12 @@ let imageFile = null;
 
 /* 🟢 TEXT EDIT */
 document.querySelectorAll('.editable').forEach(el => {
-
     el.addEventListener('input', function () {
-
         let field = this.dataset.field;
-
         if (field) {
             changes[field] = this.innerText.trim();
         }
-
     });
-
 });
 
 /* 🟢 IMAGE PREVIEW */
@@ -210,24 +194,16 @@ document.getElementById('imageInput').addEventListener('change', function(e) {
     let reader = new FileReader();
 
     reader.onload = function(e) {
-
-        let img = document.getElementById('previewImage');
-
-        if (img) {
-            img.src = e.target.result;
-        }
-
+        document.getElementById('previewImage').src = e.target.result;
     };
 
     reader.readAsDataURL(imageFile);
-
 });
 
 /* 🟢 SAVE */
 function saveChanges() {
 
     let formData = new FormData();
-
     formData.append('data', JSON.stringify(changes));
 
     if (imageFile) {
@@ -249,7 +225,6 @@ function saveChanges() {
         }
 
     });
-
 }
 
 </script>
