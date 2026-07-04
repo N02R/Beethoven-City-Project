@@ -1,15 +1,19 @@
 <?php
 session_start();
 
-/* 🟢 1. أول شيء: الاتصال بقاعدة البيانات */
+/* 🟢 1. الاتصال بقاعدة البيانات */
 require_once __DIR__ . '/../includes/bootstrap.php';
 
-/* 🟢 2. ثم الهيدر */
+/* 🟢 2. الهيدر */
 require_once __DIR__ . '/../includes/header.php';
 
-/* 🟢 3. الآن DB جاهز */
+/* 🟢 3. جلب البيانات من قاعدة البيانات */
 $stmt = $pdo->query("SELECT COUNT(*) FROM pages");
 $pages_count = $stmt->fetchColumn();
+
+/* 🟢 NEW: عدد الأدمن / المستخدمين */
+$stmt = $pdo->query("SELECT COUNT(*) FROM admins");
+$users_count = $stmt->fetchColumn();
 
 /* 🟢 4. بدء المحتوى */
 ob_start();
@@ -27,7 +31,7 @@ ob_start();
                 </div>
 
                 <div class="info">
-                    <h3>120</h3>
+                    <h3><?= $users_count ?></h3>
                     <p>Users</p>
                 </div>
             </div>
