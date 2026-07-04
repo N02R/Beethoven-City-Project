@@ -10,15 +10,15 @@ if (!isset($_SESSION['admin_logged_in'])) {
     exit;
 }
 
-/* 🟢 Bootstrap (مرة واحدة فقط) */
-require_once __DIR__ . "/../../includes/bootstrap.php";
+/* 🟢 Bootstrap (حل نهائي لمشكلة $pdo) */
+require_once __DIR__ . '/../includes/bootstrap.php';
 
-/* 🟢 جلب Hero */
+/* 🟢 جلب Hero من قاعدة البيانات */
 $stmt = $pdo->prepare("SELECT * FROM pages WHERE slug = 'home_hero' LIMIT 1");
 $stmt->execute();
 $hero = $stmt->fetch(PDO::FETCH_ASSOC);
 
-/* 🟢 صورة آمنة (المسار الصحيح) */
+/* 🟢 صورة آمنة */
 $image = !empty($hero['image'])
     ? BASE_URL . 'admin/uploads/hero/' . $hero['image']
     : BASE_URL . 'assets/img/default-hero.jpg';
@@ -31,6 +31,7 @@ $image = !empty($hero['image'])
     <meta charset="UTF-8">
     <title>Live Hero Editor</title>
 
+    <!-- 🎨 Styles -->
     <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/style.css">
 
@@ -122,6 +123,7 @@ $image = !empty($hero['image'])
     <p style="font-size:12px; margin-top:10px;">
         ✏️ Click text to edit
     </p>
+
 </div>
 
 <!-- 🟢 HERO -->
@@ -225,6 +227,7 @@ function saveChanges() {
         }
 
     });
+
 }
 
 </script>
