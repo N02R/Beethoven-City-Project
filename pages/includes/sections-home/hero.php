@@ -6,8 +6,13 @@ $stmt = $pdo->prepare("SELECT * FROM pages WHERE slug = 'home_hero' LIMIT 1");
 $stmt->execute();
 $hero = $stmt->fetch(PDO::FETCH_ASSOC);
 
-/* 🟢 تحديد صلاحية الأدمن */
+/* 🟢 صلاحية الأدمن */
 $isAdmin = !empty($_SESSION['admin']);
+
+/* 🟢 حل الصورة الآمن */
+$image = !empty($hero['image'])
+    ? BASE_URL . 'admin/uploads/hero/' . $hero['image']
+    : BASE_URL . 'assets/img/default-hero.jpg';
 ?>
 
 <section class="hero py-5">
@@ -15,12 +20,22 @@ $isAdmin = !empty($_SESSION['admin']);
   <div class="custom-container">
 
     <div class="hero-container"
-     style="background-image: url('<?= htmlspecialchars(BASE_URL . 'assets/img/' . $hero['image']) ?>');
-            background-size: cover;
-            background-position: center;
-            min-height: 500px;">
+         style="background-image: url('<?= htmlspecialchars($image) ?>');
+                background-size: cover;
+                background-position: center;
+                min-height: 500px;
+                position: relative;">
 
-      <div class="hero-content">
+      <!-- 🟣 overlay (للحفاظ على نفس التصميم) -->
+      <div style="
+            position:absolute;
+            inset:0;
+            background:linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.8));
+            z-index:1;">
+      </div>
+
+      <!-- 🟢 CONTENT -->
+      <div class="hero-content" style="position:relative; z-index:2;">
 
         <!-- 🟢 TITLE -->
         <?php if ($isAdmin): ?>
@@ -63,7 +78,7 @@ $isAdmin = !empty($_SESSION['admin']);
 
 </section>
 
-<!-- 🟣 CMS POPUP (Only Admin will use it) -->
+<!-- 🟣 CMS POPUP -->
 <?php if ($isAdmin): ?>
 
 <div id="cms-popup" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); justify-content:center; align-items:center; z-index:9999;">
@@ -85,13 +100,13 @@ $isAdmin = !empty($_SESSION['admin']);
 
 </div>
 
-<!-- 🟢 CMS SCRIPT (SECURE) -->
+<!-- 🟢 CMS SCRIPT -->
 <script>
 
 let currentField = null;
 let currentElement = null;
 
-/* 🟢 Activate editing ONLY for admin */
+/* 🟢 Enable editing */
 document.querySelectorAll('.cms-edit').forEach(el => {
 
     el.addEventListener('click', function(e) {
