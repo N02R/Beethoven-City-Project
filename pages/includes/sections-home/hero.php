@@ -15,7 +15,10 @@ $isAdmin = !empty($_SESSION['admin']);
   <div class="custom-container">
 
     <div class="hero-container"
-     style="background: url('<?= BASE_URL . 'assets/img/' . htmlspecialchars($hero['image']) ?>') center/cover no-repeat;">
+     style="background-image: url('<?= htmlspecialchars(BASE_URL . 'assets/img/' . $hero['image']) ?>');
+            background-size: cover;
+            background-position: center;
+            min-height: 500px;">
 
       <div class="hero-content">
 

@@ -11,8 +11,6 @@
   margin: 0 auto;
   border-radius: 16px;
   overflow: hidden;
-  background-size: cover;
-  background-position: center;
   aspect-ratio: 1140 / 609;
 }
 
