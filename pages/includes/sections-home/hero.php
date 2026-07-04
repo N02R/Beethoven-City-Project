@@ -1,9 +1,13 @@
 <?php
 require_once __DIR__ . '/../../../admin/includes/bootstrap.php';
 
+/* 🟢 جلب بيانات الهيرو */
 $stmt = $pdo->prepare("SELECT * FROM pages WHERE slug = 'home_hero' LIMIT 1");
 $stmt->execute();
 $hero = $stmt->fetch(PDO::FETCH_ASSOC);
+
+/* 🟢 تحديد صلاحية الأدمن */
+$isAdmin = !empty($_SESSION['admin']);
 ?>
 
 <section class="hero py-5">
@@ -15,23 +19,37 @@ $hero = $stmt->fetch(PDO::FETCH_ASSOC);
       <div class="hero-content">
 
         <!-- 🟢 TITLE -->
-        <h1 class="cms-edit" data-field="title_text">
-            <?= htmlspecialchars($hero['title_text'] ?? 'مرحباً بك في موقعنا') ?>
-        </h1>
+        <?php if ($isAdmin): ?>
+            <h1 class="cms-edit" data-field="title_text">
+                <?= htmlspecialchars($hero['title_text'] ?? 'مرحباً بك في موقعنا') ?>
+            </h1>
+        <?php else: ?>
+            <h1>
+                <?= htmlspecialchars($hero['title_text'] ?? 'مرحباً بك في موقعنا') ?>
+            </h1>
+        <?php endif; ?>
 
         <!-- 🟢 DESCRIPTION -->
-        <p class="cms-edit" data-field="description">
-            <?= htmlspecialchars($hero['description'] ?? 'نقدم أفضل الخدمات التعليمية والاحترافية') ?>
-        </p>
+        <?php if ($isAdmin): ?>
+            <p class="cms-edit" data-field="description">
+                <?= htmlspecialchars($hero['description'] ?? 'نقدم أفضل الخدمات التعليمية والاحترافية') ?>
+            </p>
+        <?php else: ?>
+            <p>
+                <?= htmlspecialchars($hero['description'] ?? 'نقدم أفضل الخدمات التعليمية والاحترافية') ?>
+            </p>
+        <?php endif; ?>
 
         <!-- 🟢 BUTTON -->
-        <a href="<?= htmlspecialchars($hero['button_link'] ?? '#') ?>" 
-           class="btn hero-btn cms-edit" 
-           data-field="button_text">
-
-            <?= htmlspecialchars($hero['button_text'] ?? 'ابدأ الآن') ?>
-
-        </a>
+        <?php if ($isAdmin): ?>
+            <a href="#" class="btn hero-btn cms-edit" data-field="button_text">
+                <?= htmlspecialchars($hero['button_text'] ?? 'ابدأ الآن') ?>
+            </a>
+        <?php else: ?>
+            <a href="<?= htmlspecialchars($hero['button_link'] ?? '#') ?>" class="btn hero-btn">
+                <?= htmlspecialchars($hero['button_text'] ?? 'ابدأ الآن') ?>
+            </a>
+        <?php endif; ?>
 
       </div>
 
@@ -41,7 +59,9 @@ $hero = $stmt->fetch(PDO::FETCH_ASSOC);
 
 </section>
 
-<!-- 🟣 CMS POPUP (Hidden by default) -->
+<!-- 🟣 CMS POPUP (Only Admin will use it) -->
+<?php if ($isAdmin): ?>
+
 <div id="cms-popup" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); justify-content:center; align-items:center; z-index:9999;">
 
     <div style="background:#fff; padding:20px; width:90%; max-width:400px; border-radius:12px;">
@@ -61,13 +81,13 @@ $hero = $stmt->fetch(PDO::FETCH_ASSOC);
 
 </div>
 
-<!-- 🟢 CMS SCRIPT -->
+<!-- 🟢 CMS SCRIPT (SECURE) -->
 <script>
 
 let currentField = null;
 let currentElement = null;
 
-/* 🟢 فتح التعديل */
+/* 🟢 Activate editing ONLY for admin */
 document.querySelectorAll('.cms-edit').forEach(el => {
 
     el.addEventListener('click', function(e) {
@@ -85,12 +105,12 @@ document.querySelectorAll('.cms-edit').forEach(el => {
 
 });
 
-/* 🟡 إغلاق */
+/* 🟡 Cancel */
 document.getElementById('cms-cancel').onclick = function() {
     document.getElementById('cms-popup').style.display = 'none';
 };
 
-/* 🟢 حفظ */
+/* 🟢 Save */
 document.getElementById('cms-save').onclick = function() {
 
     let value = document.getElementById('cms-input').value;
@@ -109,7 +129,6 @@ document.getElementById('cms-save').onclick = function() {
         if (data.status === 'success') {
 
             currentElement.innerText = value;
-
             document.getElementById('cms-popup').style.display = 'none';
 
         } else {
@@ -121,3 +140,5 @@ document.getElementById('cms-save').onclick = function() {
 };
 
 </script>
+
+<?php endif; ?>
