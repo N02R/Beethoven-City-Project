@@ -1,4 +1,6 @@
 <?php
+echo "HEADER LOADED";
+exit;
 /**
  * Admin Header - Beethoven CMS Studio
  */
