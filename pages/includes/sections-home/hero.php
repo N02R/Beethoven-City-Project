@@ -8,7 +8,7 @@ $hero = $stmt->fetch(PDO::FETCH_ASSOC);
 
 <section class="hero py-5">
 
-  <div class="hero-container">
+  <div class="hero-container custom-container">
 
     <div class="hero-content">
 
