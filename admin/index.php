@@ -1,23 +1,8 @@
-
 <?php
+require_once __DIR__ . '/includes/header.php';
+?>
 
-session_start();
-if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-    header("Location: login.php");
-    exit;
-}
-/**
- * ===================================
- * ADMIN ROUTER
- * ===================================
- */
+<h1 style="padding:20px;">Admin Test Page</h1>
 
-if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
-
-    header("Location: dashboard.php");
-    exit;
-
-}
-
-header("Location: login.php");
-exit;
+</body>
+</html>
