@@ -1,7 +1,13 @@
 <?php
 session_start();
 require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../../config.php';
 
+global $pdo;
+
+// عدد الصفحات
+$stmt = $pdo->query("SELECT COUNT(*) FROM pages");
+$pages_count = $stmt->fetchColumn();
 ob_start();
 ?>
 
@@ -34,7 +40,7 @@ ob_start();
                 </div>
 
                 <div class="info">
-                    <h3>45</h3>
+                    <h3><?= $pages_count ?></h3>
                     <p>Pages</p>
                 </div>
 
