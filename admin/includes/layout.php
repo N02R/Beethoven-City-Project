@@ -7,10 +7,7 @@ if (!defined('CMS_ADMIN')) {
     define('CMS_ADMIN', true);
 }
 
-// حماية (اختياري الآن)
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+
 
 // إذا لم يكن هناك محتوى
 if (!isset($content)) {

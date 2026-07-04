@@ -1,8 +1,8 @@
 <?php
+session_start();
 
 require_once __DIR__ . '/includes/header.php';
 
-// المحتوى
 ob_start();
 ?>
 
