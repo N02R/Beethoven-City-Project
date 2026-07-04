@@ -13,7 +13,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 /* 🟢 2. Database Connection (PDO) */
-$host = "localhost";
+$host = "127.0.0.1";
 $db   = "cms_dev";
 $user = "root";
 $pass = "";
